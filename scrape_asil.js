@@ -1,119 +1,121 @@
 /**
  * scrape_asil.js
- * asil.kr에서 2027년 아파트 입주물량 데이터를 가져와 asil_2027_raw.csv 갱신
- *
- * ⚠️  ENDPOINT 설정 필요
- * asil.kr 페이지에서 F12 → Network → XHR 탭에서
- * 입주물량 데이터를 로드할 때 발생하는 요청 URL과 파라미터를 확인 후 아래에 입력하세요.
+ * asil.kr에서 2027년 전국 아파트 입주물량 데이터를 가져와
+ * asil_2027_raw.csv + apt_list.txt 갱신
  */
 const https = require('https');
-const fs = require('fs');
-const path = require('path');
+const fs    = require('fs');
+const path  = require('path');
 
-// ─────────────────────────────────────────────────────────
-// TODO: 아래 값을 asil.kr DevTools에서 확인한 실제 값으로 교체하세요
-const ASIL_ENDPOINT = 'https://asil.kr/asil/TODO_ENDPOINT';  // ← 실제 URL
-const ASIL_METHOD   = 'POST';                                  // 'GET' or 'POST'
-const ASIL_PARAMS   = (year) => new URLSearchParams({          // ← 실제 파라미터
-  // 예시: year: year, type: 'movein', page: 1, rows: 500
-  year: year
-}).toString();
-// ─────────────────────────────────────────────────────────
+// 전국 시/도 코드 (area=0 이 전체가 아닐 경우 개별 코드로 수집)
+const SIDO_CODES = [
+  { code: '11', name: '서울'  },
+  { code: '41', name: '경기'  },
+  { code: '28', name: '인천'  },
+  { code: '42', name: '강원'  },
+  { code: '43', name: '충북'  },
+  { code: '44', name: '충남'  },
+  { code: '30', name: '대전'  },
+  { code: '47', name: '경북'  },
+  { code: '48', name: '경남'  },
+  { code: '27', name: '대구'  },
+  { code: '26', name: '부산'  },
+  { code: '31', name: '울산'  },
+  { code: '45', name: '전북'  },
+  { code: '46', name: '전남'  },
+  { code: '29', name: '광주'  },
+  { code: '50', name: '제주'  },
+  { code: '36', name: '세종'  },
+];
 
-const TARGET_YEAR = '2027';
-
-function request(url, method, body) {
+function get(url) {
   return new Promise((resolve, reject) => {
-    const u = new URL(url);
     const opts = {
-      hostname: u.hostname,
-      path: u.pathname + (method === 'GET' && body ? '?' + body : ''),
-      method,
+      hostname: 'asil.kr',
+      path: url,
+      method: 'GET',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        'Accept': 'application/json, */*',
-        'X-Requested-With': 'XMLHttpRequest',
-        'Referer': 'https://asil.kr/',
-        ...(method === 'POST' ? { 'Content-Length': Buffer.byteLength(body) } : {})
+        'Referer': 'https://asil.kr/app/household.jsp',
+        'Accept': 'application/json, text/plain, */*',
       }
     };
-    const req = https.request(opts, (res) => {
+    const req = https.request(opts, res => {
       let data = '';
       res.setEncoding('utf8');
       res.on('data', c => data += c);
       res.on('end', () => resolve({ status: res.statusCode, data }));
     });
     req.on('error', reject);
-    if (method === 'POST') req.write(body);
     req.end();
   });
 }
 
-// asil.kr 응답 JSON → CSV 행 변환
-// ⚠️  응답 JSON 구조에 맞게 수정 필요
-function parseResponse(json) {
-  const rows = [];
-  const list = json.list || json.data || json.result || json;
-  for (const item of (Array.isArray(list) ? list : [])) {
-    const region = (item.sido || item.region || '').trim();
-    const addr   = (item.addr || item.address || item.juso || '').trim();
-    const name   = (item.aptNm || item.name || item.aptName || '').trim();
-    const movein = (item.moveInYm || item.movein || item.enterYm || '').trim();
-    const hh     = String(item.hhldCnt || item.household || item.세대수 || 0);
+async function fetchSido(code, name) {
+  const qs = new URLSearchParams({
+    area: code,
+    order: 'movein_yyyymm',
+    orderby: 'asc',
+    sY: '2027', sM: '1',
+    eY: '2027', eM: '12',
+  });
+  const res = await get(`/app/data/data_movein.jsp?${qs}`);
+  if (res.status !== 200) throw new Error(`${name} HTTP ${res.status}`);
 
-    if (!name || !movein) continue;
+  let json;
+  try { json = JSON.parse(res.data); } catch { return []; }
+  const list = Array.isArray(json) ? json : (json.list || json.data || []);
 
-    // movein을 "2027년 3월" 형식으로 정규화
-    const moveinFmt = movein.replace(/^(\d{4})(\d{2})$/, (_, y, m) =>
-      `${y}년 ${parseInt(m)}월`
-    );
-    const moveinYm = movein.replace(/[^0-9]/g, '').slice(0, 6);
-
-    rows.push({ region, addr: addr || region, name, movein: moveinFmt, moveinYm, household: hh });
-  }
-  return rows;
+  return list.map(item => ({
+    region: name,
+    addr:      (item.addr  || '').trim(),
+    name:      (item.name  || '').trim(),
+    movein:    (item.movein || '').trim(),           // "2027년 3월"
+    household: String(item.household || '0').replace(/[^0-9]/g, ''),
+  })).filter(r => r.name && r.movein);
 }
 
 async function main() {
-  if (ASIL_ENDPOINT.includes('TODO')) {
-    console.error('❌ ASIL_ENDPOINT가 설정되지 않았습니다.');
-    console.error('   scrape_asil.js 상단의 TODO 항목을 채워주세요.');
-    process.exit(1);
+  console.log('asil.kr 2027년 전국 입주물량 수집 중...');
+  const all = [];
+
+  for (const sido of SIDO_CODES) {
+    try {
+      const rows = await fetchSido(sido.code, sido.name);
+      console.log(`  ${sido.name}: ${rows.length}개`);
+      all.push(...rows);
+    } catch (e) {
+      console.warn(`  ${sido.name} 실패: ${e.message}`);
+    }
+    // 요청 간 간격
+    await new Promise(r => setTimeout(r, 300));
   }
 
-  console.log(`asil.kr에서 ${TARGET_YEAR}년 입주물량 데이터 수집 중...`);
-  const params = ASIL_PARAMS(TARGET_YEAR);
-  const res = await request(ASIL_ENDPOINT, ASIL_METHOD, params);
+  // 중복 제거 (같은 단지명+입주월)
+  const seen = new Set();
+  const deduped = all.filter(r => {
+    const key = `${r.name}|${r.movein}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 
-  if (res.status !== 200) {
-    console.error(`❌ HTTP ${res.status}: ${res.data.substring(0, 200)}`);
-    process.exit(1);
-  }
-
-  let json;
-  try { json = JSON.parse(res.data); }
-  catch { console.error('❌ JSON 파싱 실패:', res.data.substring(0, 300)); process.exit(1); }
-
-  const rows = parseResponse(json);
-  if (rows.length === 0) {
-    console.error('❌ 데이터가 없습니다. parseResponse() 함수를 응답 구조에 맞게 수정하세요.');
-    console.log('응답 샘플:', res.data.substring(0, 500));
-    process.exit(1);
-  }
+  // 입주월 오름차순 정렬
+  deduped.sort((a, b) => a.movein.localeCompare(b.movein, 'ko'));
 
   // CSV 저장
   const csvLines = ['"region","addr","name","movein","movein_ym","household"'];
-  for (const r of rows) {
-    csvLines.push(`"${r.region}","${r.addr}","${r.name}","${r.movein}","${r.moveinYm}","${r.household}"`);
+  for (const r of deduped) {
+    const ym = r.movein.replace(/[^0-9]/g, '').padEnd(6, '0');
+    csvLines.push(`"${r.region}","${r.addr}","${r.name}","${r.movein}","${ym}","${r.household}"`);
   }
   fs.writeFileSync(path.join(__dirname, 'asil_2027_raw.csv'), csvLines.join('\n'), 'utf8');
 
-  // apt_list.txt 갱신
-  const aptLines = rows.map(r => `${r.name}|${r.addr}|${r.movein}|${r.household}`);
+  // apt_list.txt 저장
+  const aptLines = deduped.map(r => `${r.name}|${r.addr}|${r.movein}|${r.household}`);
   fs.writeFileSync(path.join(__dirname, 'apt_list.txt'), aptLines.join('\n') + '\n', 'utf8');
 
-  console.log(`✅ ${rows.length}개 단지 수집 완료`);
+  console.log(`\n✅ 총 ${deduped.length}개 단지 저장 완료`);
 }
 
-main().catch(e => { console.error(e); process.exit(1); });
+main().catch(e => { console.error('❌', e.message); process.exit(1); });
