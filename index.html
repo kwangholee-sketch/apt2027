@@ -32,9 +32,6 @@
     tfoot tr { background: #dce6f1; font-weight: 700; }
     td:nth-child(5) { text-align: center; white-space: nowrap; }
     .ceiling-badge { display: inline-block; }
-    .ceiling-filter-btns { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
-    .ceiling-filter-btns button { padding: 5px 12px; border: 1px solid #ddd; border-radius: 14px; background: #fff; font-size: 12px; cursor: pointer; font-family: inherit; transition: all 0.15s; }
-    .ceiling-filter-btns button.active, .ceiling-filter-btns button:hover { background: #2c3e6b; color: #fff; border-color: #2c3e6b; }
     tfoot td { padding: 10px 14px; }
     tfoot td:nth-child(3) { text-align: right; }
     tfoot td:nth-child(4) { text-align: right; }
@@ -81,12 +78,12 @@
       <option value="2027년 11월">11월</option>
       <option value="2027년 12월">12월</option>
     </select>
+    <select id="filterCeil" onchange="filterTable()">
+      <option value="">전체 천장고</option>
+      <option value="2.4m">천장고 2.4m</option>
+      <option value="2.3m">천장고 2.3m</option>
+    </select>
     <input type="text" id="searchInput" placeholder="단지명 또는 위치 검색..." oninput="filterTable()">
-  </div>
-  <div class="ceiling-filter-btns">
-    <button onclick="filterCeiling('')" class="active" id="ceilBtn-all">전체</button>
-    <button onclick="filterCeiling('2.4m')" id="ceilBtn-24">천장고 2.4m</button>
-    <button onclick="filterCeiling('2.3m')" id="ceilBtn-23">천장고 2.3m</button>
   </div>
   <p class="count" id="countTxt">총 164개 단지</p>
 
@@ -297,15 +294,6 @@
     updateCount();
   }
 
-  let ceilFilter = '';
-  function filterCeiling(val) {
-    ceilFilter = val;
-    document.querySelectorAll('.ceiling-filter-btns button').forEach(b => b.classList.remove('active'));
-    const id = val === '2.4m' ? 'ceilBtn-24' : val === '2.3m' ? 'ceilBtn-23' : 'ceilBtn-all';
-    document.getElementById(id).classList.add('active');
-    filterTable();
-  }
-
   function updateTotals(visibleRows) {
     const totalHH = visibleRows.reduce((sum, r) => {
       return sum + (parseInt(r.cells[3].textContent.replace(/[^0-9]/g, '')) || 0);
@@ -318,6 +306,7 @@
     const kw = document.getElementById('searchInput').value.toLowerCase();
     const mon = document.getElementById('filterMonth').value;
     const region = document.getElementById('filterRegion').value;
+    const ceilFilter = document.getElementById('filterCeil').value;
     const rows = document.querySelectorAll('#aptTable tbody tr');
     const visible = [];
     rows.forEach(r => {
