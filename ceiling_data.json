@@ -1,0 +1,1314 @@
+[
+  {
+    "name": "부천아테라자이",
+    "addr": "경기 부천 소사구",
+    "movein": "2027년 1월",
+    "households": 200,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "지제역반도체밸리쌍용더플래티넘",
+    "addr": "경기 평택 가재동",
+    "movein": "2027년 1월",
+    "households": 1340,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "평택브레인시티대광로제비앙그랜드센텀",
+    "addr": "경기 평택시",
+    "movein": "2027년 1월",
+    "households": 1182,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "위파크안동호반",
+    "addr": "경북 안동 옥동",
+    "movein": "2027년 1월",
+    "households": 820,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "울산우정에피트",
+    "addr": "울산 중구 우정동",
+    "movein": "2027년 1월",
+    "households": 533,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "더샵광양레이크센텀",
+    "addr": "전남 광양시",
+    "movein": "2027년 1월",
+    "households": 925,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "에코시티더샵4차",
+    "addr": "전북 전주 덕진구 송천동",
+    "movein": "2027년 1월",
+    "households": 576,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "청주가경아이파크6단지",
+    "addr": "충북 청주 흥덕구 가경동",
+    "movein": "2027년 1월",
+    "households": 946,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "신영지웰푸르지오테크노폴리스센트럴(주상복합)",
+    "addr": "충북 청주 흥덕구 송절동",
+    "movein": "2027년 1월",
+    "households": 1034,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "원주모아엘가그랑데",
+    "addr": "강원 원주 단구동",
+    "movein": "2027년 2월",
+    "households": 353,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "서광교한라비발디레이크포레",
+    "addr": "경기 수원 장안구 연무동",
+    "movein": "2027년 2월",
+    "households": 285,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "지제역반도체밸리해링턴플레이스",
+    "addr": "경기 평택 가재동",
+    "movein": "2027년 2월",
+    "households": 1209,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "진위역서희스타힐스더파크뷰",
+    "addr": "경기 평택 진위면",
+    "movein": "2027년 2월",
+    "households": 1659,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "평택브레인시티중흥S-클래스",
+    "addr": "경기 평택시",
+    "movein": "2027년 2월",
+    "households": 1980,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "힐스테이트선화더와이즈",
+    "addr": "대전 중구 선화동",
+    "movein": "2027년 2월",
+    "households": 851,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "더샵금정위버시티",
+    "addr": "부산 금정구 부곡동",
+    "movein": "2027년 2월",
+    "households": 994,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "부산장안지구디에트르디오션",
+    "addr": "부산 기장 장안읍",
+    "movein": "2027년 2월",
+    "households": 507,
+    "ceiling": "2.4m",
+    "source": "조사(디에트르브랜드)"
+  },
+  {
+    "name": "동래에코팰리스아시아드(주상복합)",
+    "addr": "부산 동래구 온천동",
+    "movein": "2027년 2월",
+    "households": 160,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "청계리버뷰자이",
+    "addr": "서울 성동구 용답동",
+    "movein": "2027년 2월",
+    "households": 1670,
+    "ceiling": "2.4m",
+    "source": "PDF확인"
+  },
+  {
+    "name": "더폴울산신정",
+    "addr": "울산 남구 신정동",
+    "movein": "2027년 2월",
+    "households": 168,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "힐스테이트문수로센트럴2단지",
+    "addr": "울산 남구 신정동",
+    "movein": "2027년 2월",
+    "households": 301,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "힐스테이트문수로센트럴1단지",
+    "addr": "울산 남구 신정동",
+    "movein": "2027년 2월",
+    "households": 301,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "제일풍경채검단Ⅳ",
+    "addr": "인천 서구 불로동",
+    "movein": "2027년 2월",
+    "households": 1048,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "검단아테라자이(AB21-1블록)",
+    "addr": "인천 서구 불로동",
+    "movein": "2027년 2월",
+    "households": 709,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "배방필하우스리버시티",
+    "addr": "충남 아산 배방읍",
+    "movein": "2027년 2월",
+    "households": 1083,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "더샵탕정인피니티시티2차",
+    "addr": "충남 아산 탕정면",
+    "movein": "2027년 2월",
+    "households": 1214,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "e편한세상일산메이포레3단지",
+    "addr": "경기 고양 일산동구",
+    "movein": "2027년 3월",
+    "households": 457,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "e편한세상일산메이포레1단지",
+    "addr": "경기 고양 일산동구",
+    "movein": "2027년 3월",
+    "households": 321,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "영통자이센트럴파크",
+    "addr": "경기 수원 영통구 영통동",
+    "movein": "2027년 3월",
+    "households": 580,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "안성당왕경남아너스빌하이스트",
+    "addr": "경기 안성시",
+    "movein": "2027년 3월",
+    "households": 976,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "두산위브더제니스센트럴용인",
+    "addr": "경기 용인 처인구 삼가동",
+    "movein": "2027년 3월",
+    "households": 568,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "역북서희스타힐스프라임시티",
+    "addr": "경기 용인 처인구 역북동",
+    "movein": "2027년 3월",
+    "households": 912,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "도마포레나해모로",
+    "addr": "대전 서구 도마동",
+    "movein": "2027년 3월",
+    "households": 818,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "일광노르웨이숲오션포레",
+    "addr": "부산 기장 일광읍",
+    "movein": "2027년 3월",
+    "households": 1294,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "양정롯데캐슬프론티엘",
+    "addr": "부산 부산진구 양정동",
+    "movein": "2027년 3월",
+    "households": 903,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "마포푸르지오어반피스(주상복합)",
+    "addr": "서울 마포구 아현동",
+    "movein": "2027년 3월",
+    "households": 239,
+    "ceiling": "2.4m",
+    "source": "조사(서울마포재개발)"
+  },
+  {
+    "name": "푸르지오라디우스파크",
+    "addr": "서울 성북구 장위동",
+    "movein": "2027년 3월",
+    "households": 1637,
+    "ceiling": "2.4m",
+    "source": "조사(서울장위뉴타운)"
+  },
+  {
+    "name": "강릉유블레스리센트",
+    "addr": "강원 강릉 포남동",
+    "movein": "2027년 4월",
+    "households": 226,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "강릉아테라",
+    "addr": "강원 강릉 회산동",
+    "movein": "2027년 4월",
+    "households": 329,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "휴먼빌일산클래스원",
+    "addr": "경기 고양 일산동구 식사동",
+    "movein": "2027년 4월",
+    "households": 529,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "이천자이더레브",
+    "addr": "경기 이천 송정동",
+    "movein": "2027년 4월",
+    "households": 635,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "제일풍경채운정",
+    "addr": "경기 파주 목동동",
+    "movein": "2027년 4월",
+    "households": 520,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "신영지웰평택화양",
+    "addr": "경기 평택시",
+    "movein": "2027년 4월",
+    "households": 999,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "김해삼계푸르지오센트럴파크",
+    "addr": "경남 김해 삼계동",
+    "movein": "2027년 4월",
+    "households": 630,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "힐스테이트구미더퍼스트",
+    "addr": "경북 구미시",
+    "movein": "2027년 4월",
+    "households": 491,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "대연디아이엘",
+    "addr": "부산 남구 대연동",
+    "movein": "2027년 4월",
+    "households": 4488,
+    "ceiling": "2.3m",
+    "source": "PDF확인"
+  },
+  {
+    "name": "창경궁롯데캐슬시그니처",
+    "addr": "서울 성북구 삼선동",
+    "movein": "2027년 4월",
+    "households": 1223,
+    "ceiling": "2.3m",
+    "source": "PDF확인"
+  },
+  {
+    "name": "검단스타힐스가현숲",
+    "addr": "인천 서구 마전동",
+    "movein": "2027년 4월",
+    "households": 709,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "힐스테이트죽림더프라우드A4BL",
+    "addr": "전남 여수 소라면",
+    "movein": "2027년 4월",
+    "households": 341,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "힐스테이트죽림더프라우드A2BL",
+    "addr": "전남 여수 소라면",
+    "movein": "2027년 4월",
+    "households": 931,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "제주중부공원제일풍경채센트럴파크",
+    "addr": "제주 제주 건입동",
+    "movein": "2027년 4월",
+    "households": 728,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "고양장항아테라",
+    "addr": "경기 고양 일산동구 장항동",
+    "movein": "2027년 5월",
+    "households": 760,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "과천디에트르퍼스티지(S2BL)",
+    "addr": "경기 과천 문원동",
+    "movein": "2027년 5월",
+    "households": 740,
+    "ceiling": "2.4m",
+    "source": "조사(과천+디에트르)"
+  },
+  {
+    "name": "곤지암역센트럴아이파크",
+    "addr": "경기 광주 곤지암읍",
+    "movein": "2027년 5월",
+    "households": 347,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "힐스테이트광주곤지암역",
+    "addr": "경기 광주 곤지암읍",
+    "movein": "2027년 5월",
+    "households": 635,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "고덕국제신도시서한이다음그레이튼",
+    "addr": "경기 평택 고덕동",
+    "movein": "2027년 5월",
+    "households": 1138,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "봉산공원첨단제일풍경채",
+    "addr": "광주 광산구 산월동",
+    "movein": "2027년 5월",
+    "households": 948,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "쌍용더플래티넘네이처",
+    "addr": "대전 대덕구 읍내동",
+    "movein": "2027년 5월",
+    "households": 745,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "부산에코델타시티디에트르그랑루체",
+    "addr": "부산 강서구 강동동",
+    "movein": "2027년 5월",
+    "households": 1470,
+    "ceiling": "2.4m",
+    "source": "조사(디에트르브랜드)"
+  },
+  {
+    "name": "더샵시에르네",
+    "addr": "울산 중구 학성동",
+    "movein": "2027년 5월",
+    "households": 788,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "두산위브더제니스센트럴계양",
+    "addr": "인천 계양구 작전동",
+    "movein": "2027년 5월",
+    "households": 1370,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "영종진아레히",
+    "addr": "인천 중구 운남동",
+    "movein": "2027년 5월",
+    "households": 547,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "계룡펠리피아",
+    "addr": "충남 계룡 엄사면",
+    "movein": "2027년 5월",
+    "households": 823,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "천안호반써밋센트럴파크2BL",
+    "addr": "충남 천안 동남구 용곡동",
+    "movein": "2027년 5월",
+    "households": 1284,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "춘천아테라에듀파크",
+    "addr": "강원 춘천 동면",
+    "movein": "2027년 6월",
+    "households": 477,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "힐스테이트더웨이브시티",
+    "addr": "경기 시흥 정왕동",
+    "movein": "2027년 6월",
+    "households": 851,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "양주덕정역에피트",
+    "addr": "경기 양주시",
+    "movein": "2027년 6월",
+    "households": 427,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "여주역자이헤리티지",
+    "addr": "경기 여주 교동",
+    "movein": "2027년 6월",
+    "households": 769,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "동탄역대방엘리움더시그니처(C18BL)",
+    "addr": "경기 화성 동탄구 여울동",
+    "movein": "2027년 6월",
+    "households": 464,
+    "ceiling": "2.4m",
+    "source": "조사(대방엘리움브랜드)"
+  },
+  {
+    "name": "운암산공원우미린리버포레",
+    "addr": "광주 북구 동림동",
+    "movein": "2027년 6월",
+    "households": 734,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "두산위브더제니스센트럴시티",
+    "addr": "대구 북구 학정동",
+    "movein": "2027년 6월",
+    "households": 1098,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "대전성남우미린뉴시티",
+    "addr": "대전 동구 성남동",
+    "movein": "2027년 6월",
+    "households": 1213,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "힐스테이트가장더퍼스트",
+    "addr": "대전 서구 가장동",
+    "movein": "2027년 6월",
+    "households": 1779,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "더샵리오몬트",
+    "addr": "부산 사상구 엄궁동",
+    "movein": "2027년 6월",
+    "households": 1305,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "서울대방 신혼희망타운",
+    "addr": "서울 영등포구",
+    "movein": "2027년 6월",
+    "households": 183,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "검단중흥S-클래스에듀파크",
+    "addr": "인천 서구 불로동",
+    "movein": "2027년 6월",
+    "households": 1448,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "송도자이풍경채그라노블1단지",
+    "addr": "인천 연수구 송도동",
+    "movein": "2027년 6월",
+    "households": 469,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "송도자이풍경채그라노블2단지",
+    "addr": "인천 연수구 송도동",
+    "movein": "2027년 6월",
+    "households": 548,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "힐스테이트어울림청주사직",
+    "addr": "충북 청주 서원구 사직동",
+    "movein": "2027년 6월",
+    "households": 2330,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "더샵속초프라임뷰",
+    "addr": "강원 속초 금호동",
+    "movein": "2027년 7월",
+    "households": 1024,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "광명자이힐스테이트SK뷰",
+    "addr": "경기 광명 광명동",
+    "movein": "2027년 7월",
+    "households": 2878,
+    "ceiling": "2.3m",
+    "source": "PDF확인"
+  },
+  {
+    "name": "시흥롯데캐슬시그니처(1블럭)",
+    "addr": "경기 시흥 은행동",
+    "movein": "2027년 7월",
+    "households": 1230,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "시흥롯데캐슬시그니처(2블럭)",
+    "addr": "경기 시흥 은행동",
+    "movein": "2027년 7월",
+    "households": 903,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "용인둔전역에피트",
+    "addr": "경기 용인 처인구 포곡읍",
+    "movein": "2027년 7월",
+    "households": 1275,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "대구금호워터폴리스대방디에트르",
+    "addr": "대구 북구",
+    "movein": "2027년 7월",
+    "households": 641,
+    "ceiling": "2.4m",
+    "source": "조사(디에트르브랜드)"
+  },
+  {
+    "name": "한신더휴하이엔에듀포레",
+    "addr": "서울 금천구",
+    "movein": "2027년 7월",
+    "households": 219,
+    "ceiling": "2.4m",
+    "source": "조사(서울+프리미엄브랜드)"
+  },
+  {
+    "name": "태화강에피트",
+    "addr": "울산 울주 범서읍",
+    "movein": "2027년 7월",
+    "households": 307,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "순천그랜드파크자이",
+    "addr": "전남 순천 풍덕동",
+    "movein": "2027년 7월",
+    "households": 997,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "곤지암역제일풍경채",
+    "addr": "경기 광주 곤지암읍",
+    "movein": "2027년 8월",
+    "households": 565,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "광주태전경남아너스빌리미티드",
+    "addr": "경기 광주 장지동",
+    "movein": "2027년 8월",
+    "households": 404,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "소사역롯데캐슬더뉴엘",
+    "addr": "경기 부천 소사구 소사본동",
+    "movein": "2027년 8월",
+    "households": 983,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "롯데캐슬위너스포레",
+    "addr": "경기 오산 양산동",
+    "movein": "2027년 8월",
+    "households": 1672,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "힐스테이트오산더클래스",
+    "addr": "경기 오산 양산동",
+    "movein": "2027년 8월",
+    "households": 970,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "용인푸르지오원클러스터1단지",
+    "addr": "경기 용인 처인구 남동",
+    "movein": "2027년 8월",
+    "households": 1681,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "중앙공원롯데캐슬시그니처2-1BL",
+    "addr": "광주 서구 금호동",
+    "movein": "2027년 8월",
+    "households": 915,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "중앙공원롯데캐슬시그니처1BL",
+    "addr": "광주 서구 풍암동",
+    "movein": "2027년 8월",
+    "households": 929,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "중앙공원롯데캐슬시그니처2-2BL",
+    "addr": "광주 서구 풍암동",
+    "movein": "2027년 8월",
+    "households": 928,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "힐스테이트도안리버파크5단지",
+    "addr": "대전 유성구 복용동",
+    "movein": "2027년 8월",
+    "households": 443,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "힐스테이트도안리버파크1단지",
+    "addr": "대전 유성구 학하동",
+    "movein": "2027년 8월",
+    "households": 1124,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "문화자이SK뷰",
+    "addr": "대전 중구 문화동",
+    "movein": "2027년 8월",
+    "households": 1746,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "힐스테이트천안역스카이움(주)",
+    "addr": "충남 천안 서북구 성정동",
+    "movein": "2027년 8월",
+    "households": 999,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "더샵오창프레스티지",
+    "addr": "충북 청주 청원구 오창읍",
+    "movein": "2027년 8월",
+    "households": 644,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "청주테크노폴리스아테라",
+    "addr": "충북 청주 흥덕구 송절동",
+    "movein": "2027년 8월",
+    "households": 1450,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "한화포레나충주호암",
+    "addr": "충북 충주시",
+    "movein": "2027년 8월",
+    "households": 847,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "자라섬수자인리버페스타",
+    "addr": "경기 가평 가평읍",
+    "movein": "2027년 9월",
+    "households": 381,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "청평수자인더퍼스트",
+    "addr": "경기 가평 청평면",
+    "movein": "2027년 9월",
+    "households": 551,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "북수원이목지구대방디에트르더리체I",
+    "addr": "경기 수원 장안구",
+    "movein": "2027년 9월",
+    "households": 768,
+    "ceiling": "2.4m",
+    "source": "조사(디에트르브랜드)"
+  },
+  {
+    "name": "이천롯데캐슬센트럴페라즈스카이",
+    "addr": "경기 이천시",
+    "movein": "2027년 9월",
+    "households": 801,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "김해구산롯데캐슬시그니처",
+    "addr": "경남 김해 구산동",
+    "movein": "2027년 9월",
+    "households": 714,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "힐스테이트더샵상생공원2단지",
+    "addr": "경북 포항 남구 대잠동",
+    "movein": "2027년 9월",
+    "households": 1668,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "힐스테이트더샵상생공원1단지",
+    "addr": "경북 포항 남구 대잠동",
+    "movein": "2027년 9월",
+    "households": 999,
+    "ceiling": "2.3m",
+    "source": "PDF확인"
+  },
+  {
+    "name": "힐스테이트도안리버파크2단지",
+    "addr": "대전 유성구 학하동",
+    "movein": "2027년 9월",
+    "households": 1437,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "대전르에브스위첸2단지",
+    "addr": "대전 중구 대흥동",
+    "movein": "2027년 9월",
+    "households": 838,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "대전르에브스위첸1단지",
+    "addr": "대전 중구 대흥동",
+    "movein": "2027년 9월",
+    "households": 440,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "문현푸르지오트레시엘",
+    "addr": "부산 남구 문현동",
+    "movein": "2027년 9월",
+    "households": 960,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "순천지에이그린웰하이드원",
+    "addr": "전남 순천시",
+    "movein": "2027년 9월",
+    "households": 475,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "전주인후마루힐센트럴",
+    "addr": "전북 전주 덕진구 인후동",
+    "movein": "2027년 9월",
+    "households": 199,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "원봉공원힐데스하임",
+    "addr": "충북 청주 상당구 용암동",
+    "movein": "2027년 9월",
+    "households": 1211,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "고양창릉S5 공공분양",
+    "addr": "경기 고양 덕양구",
+    "movein": "2027년 10월",
+    "households": 759,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "광명롯데캐슬시그니처",
+    "addr": "경기 광명 광명동",
+    "movein": "2027년 10월",
+    "households": 1509,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "효성해링턴플레이스동수원(주상복합)",
+    "addr": "경기 수원 팔달구 우만동",
+    "movein": "2027년 10월",
+    "households": 162,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "양주백석모아엘가그랑데",
+    "addr": "경기 양주시",
+    "movein": "2027년 10월",
+    "households": 929,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "더샵의정부역링크시티",
+    "addr": "경기 의정부 의정부동",
+    "movein": "2027년 10월",
+    "households": 1401,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "안동용상하늘채리버스카이",
+    "addr": "경북 안동 용상동",
+    "movein": "2027년 10월",
+    "households": 548,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "진월더리브라포레",
+    "addr": "광주 남구",
+    "movein": "2027년 10월",
+    "households": 300,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "둔산엘리프더센트럴",
+    "addr": "대전 서구 괴정동",
+    "movein": "2027년 10월",
+    "households": 864,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "부산에코델타시티대방엘리움리버뷰",
+    "addr": "부산 강서구",
+    "movein": "2027년 10월",
+    "households": 470,
+    "ceiling": "2.4m",
+    "source": "조사(대방엘리움브랜드)"
+  },
+  {
+    "name": "리아츠더인천",
+    "addr": "인천 동구 송림동",
+    "movein": "2027년 10월",
+    "households": 378,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "순천한양립스파크포레",
+    "addr": "전남 순천시",
+    "movein": "2027년 10월",
+    "households": 463,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "더샵탕정인피니티시티3차",
+    "addr": "충남 아산 탕정면",
+    "movein": "2027년 10월",
+    "households": 1163,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "원주푸르지오더센트럴",
+    "addr": "강원 원주 원동",
+    "movein": "2027년 11월",
+    "households": 1502,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "광명유승한내들라포레",
+    "addr": "경기 광명시",
+    "movein": "2027년 11월",
+    "households": 444,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "롯데캐슬시그니처중앙",
+    "addr": "경기 안산 단원구 고잔동",
+    "movein": "2027년 11월",
+    "households": 1051,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "양주용암영무예다음더퍼스트",
+    "addr": "경기 양주시",
+    "movein": "2027년 11월",
+    "households": 644,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "의왕월암A-1블록 신혼희망타운",
+    "addr": "경기 의왕시",
+    "movein": "2027년 11월",
+    "households": 674,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "의정부롯데캐슬나리벡시티",
+    "addr": "경기 의정부 금오동",
+    "movein": "2027년 11월",
+    "households": 671,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "문산역3차동문디이스트센트럴",
+    "addr": "경기 파주 문산읍",
+    "movein": "2027년 11월",
+    "households": 951,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "한양립스에듀포레",
+    "addr": "광주 광산구",
+    "movein": "2027년 11월",
+    "households": 470,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "대전롯데캐슬더퍼스트",
+    "addr": "대전 동구",
+    "movein": "2027년 11월",
+    "households": 952,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "동래롯데캐슬시그니처",
+    "addr": "부산 동래구 수안동",
+    "movein": "2027년 11월",
+    "households": 870,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "디에이치클래스트",
+    "addr": "서울 서초구",
+    "movein": "2027년 11월",
+    "households": 5007,
+    "ceiling": "2.4m",
+    "source": "조사(현대건설최고급)"
+  },
+  {
+    "name": "번영로하늘채라크뷰",
+    "addr": "울산 남구 야음동",
+    "movein": "2027년 11월",
+    "households": 803,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "계양롯데캐슬파크시티2단지",
+    "addr": "인천 계양구 효성동",
+    "movein": "2027년 11월",
+    "households": 1089,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "계양롯데캐슬파크시티1단지",
+    "addr": "인천 계양구 효성동",
+    "movein": "2027년 11월",
+    "households": 1964,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "위파크제주1단지",
+    "addr": "제주 제주 오라이동",
+    "movein": "2027년 11월",
+    "households": 686,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "위파크제주2단지",
+    "addr": "제주 제주 오라이동",
+    "movein": "2027년 11월",
+    "households": 643,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "고양창릉S6 공공분양",
+    "addr": "경기 고양 덕양구",
+    "movein": "2027년 12월",
+    "households": 430,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "김포북변우미린파크리브",
+    "addr": "경기 김포 북변동",
+    "movein": "2027년 12월",
+    "households": 1200,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "산성역헤리스톤",
+    "addr": "경기 성남 수정구 산성동",
+    "movein": "2027년 12월",
+    "households": 3487,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "평촌자이퍼스니티",
+    "addr": "경기 안양 동안구 비산동",
+    "movein": "2027년 12월",
+    "households": 2737,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "덕계역한신더휴포레스트",
+    "addr": "경기 양주 덕계동",
+    "movein": "2027년 12월",
+    "households": 724,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "힐스테이트용인마크밸리",
+    "addr": "경기 용인 처인구",
+    "movein": "2027년 12월",
+    "households": 660,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "의왕월암지구대방디에트르레이크파크",
+    "addr": "경기 의왕시",
+    "movein": "2027년 12월",
+    "households": 703,
+    "ceiling": "2.4m",
+    "source": "조사(디에트르브랜드)"
+  },
+  {
+    "name": "의정부푸르지오클라시엘",
+    "addr": "경기 의정부 금오동",
+    "movein": "2027년 12월",
+    "households": 656,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "평택화양서희스타힐스센트럴파크2차",
+    "addr": "경기 평택시",
+    "movein": "2027년 12월",
+    "households": 815,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "송암공원중흥S-클래스SK뷰",
+    "addr": "광주 남구 송하동",
+    "movein": "2027년 12월",
+    "households": 1575,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "힐스테이트도안리버파크3단지",
+    "addr": "대전 유성구 학하동",
+    "movein": "2027년 12월",
+    "households": 1639,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "e편한세상범일국제금융시티(주상복합)",
+    "addr": "부산 동구 범일동",
+    "movein": "2027년 12월",
+    "households": 856,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "사하경남아너스빌시그니처",
+    "addr": "부산 사하구 감천동",
+    "movein": "2027년 12월",
+    "households": 380,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "올림픽파크서한포레스트(주상복합)",
+    "addr": "서울 강동구 둔촌동",
+    "movein": "2027년 12월",
+    "households": 128,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "래미안센트리폴3BL",
+    "addr": "인천 연수구 옥련동",
+    "movein": "2027년 12월",
+    "households": 1024,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "아산탕정자이퍼스트시티",
+    "addr": "충남 아산 탕정면",
+    "movein": "2027년 12월",
+    "households": 797,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "천안두정역양우내안애퍼스트로",
+    "addr": "충남 천안 서북구",
+    "movein": "2027년 12월",
+    "households": 416,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  },
+  {
+    "name": "천안아이파크시티",
+    "addr": "충남 천안 서북구 성성동",
+    "movein": "2027년 12월",
+    "households": 1126,
+    "ceiling": "2.3m",
+    "source": "추정(기본)"
+  }
+]
