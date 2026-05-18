@@ -38,6 +38,10 @@ const aptList = fs.readFileSync(path.join(__dirname, 'apt_list.txt'), 'utf8')
 // 총 세대수
 const totalHH = aptList.reduce((s, a) => s + (parseInt(a.hh) || 0), 0);
 
+// 업데이트 일자
+const now = new Date();
+const updatedAt = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`;
+
 // tbody rows
 const rows = aptList.map(apt => {
   const info  = lookupCeiling(apt.name);
@@ -88,7 +92,7 @@ const html = `<!DOCTYPE html>
 <div class="wrap">
   <h1>APT 입주물량</h1>
   <p class="notice">해당 입주물량은 월 단위 업데이트 데이터로 실시간 모든 입주예정단지를 반영하지 않을 수 있습니다. 자료 이용에 참고 바랍니다.</p>
-  <p class="source">출처 : 분양물량조사 &nbsp;|&nbsp; 전국 기준 2027년 1월~12월</p>
+  <p class="source">출처 : 분양물량조사 &nbsp;|&nbsp; 전국 기준 2027년 1월~12월 &nbsp;|&nbsp; 데이터 업데이트 : ${updatedAt}</p>
   <p class="notice" style="margin-bottom:16px;">
     천장고 기준 :
     <span style="background:#dbeeff;color:#1a6b9e;padding:1px 7px;border-radius:10px;font-size:11px;font-weight:600;">2.4m</span>
