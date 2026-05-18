@@ -267,7 +267,7 @@
       <tr><td>충남 아산 탕정면</td><td>아산탕정자이퍼스트시티</td><td>2027년 12월</td><td>797세대</td><td><span class="ceiling-badge" style="background:#e8f5e2;color:#4a7c3f;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;cursor:default;" title="추정(기본)">2.3m</span></td></tr>
     </tbody>
     <tfoot>
-      <tr><td colspan="2"></td><td>총 세대수</td><td>153,158세대</td><td></td></tr>
+      <tr><td colspan="2"></td><td>총 세대수</td><td id="totalHH">153,158세대</td><td></td></tr>
     </tfoot>
   </table>
 </div>
@@ -306,12 +306,20 @@
     filterTable();
   }
 
+  function updateTotals(visibleRows) {
+    const totalHH = visibleRows.reduce((sum, r) => {
+      return sum + (parseInt(r.cells[3].textContent.replace(/[^0-9]/g, '')) || 0);
+    }, 0);
+    document.getElementById('countTxt').textContent = '총 ' + visibleRows.length + '개 단지';
+    document.getElementById('totalHH').textContent = totalHH.toLocaleString() + '세대';
+  }
+
   function filterTable() {
     const kw = document.getElementById('searchInput').value.toLowerCase();
     const mon = document.getElementById('filterMonth').value;
     const region = document.getElementById('filterRegion').value;
     const rows = document.querySelectorAll('#aptTable tbody tr');
-    let visible = 0;
+    const visible = [];
     rows.forEach(r => {
       const loc = r.cells[0].textContent;
       const nm  = r.cells[1].textContent;
@@ -321,15 +329,16 @@
       const matchMon = !mon || mv.replace(/\s/g,'').includes(mon.replace(/\s/g,''));
       const matchCeil = !ceilFilter || ceil.includes(ceilFilter);
       const matchRegion = !region || loc.startsWith(region);
-      r.style.display = matchKw && matchMon && matchCeil && matchRegion ? '' : 'none';
-      if (matchKw && matchMon && matchCeil && matchRegion) visible++;
+      const show = matchKw && matchMon && matchCeil && matchRegion;
+      r.style.display = show ? '' : 'none';
+      if (show) visible.push(r);
     });
-    document.getElementById('countTxt').textContent = '총 ' + visible + '개 단지';
+    updateTotals(visible);
   }
 
   function updateCount() {
-    const visible = Array.from(document.querySelectorAll('#aptTable tbody tr')).filter(r => r.style.display !== 'none').length;
-    document.getElementById('countTxt').textContent = '총 ' + visible + '개 단지';
+    const visible = Array.from(document.querySelectorAll('#aptTable tbody tr')).filter(r => r.style.display !== 'none');
+    updateTotals(visible);
   }
 
   // 기본 정렬 표시
