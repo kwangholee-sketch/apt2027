@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>부산사업소 매출 대시보드</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --brand: #c80a1e;
+      --brand-light: #fdf0f2;
+      --bg: #f4f5f7;
+      --card: #ffffff;
+      --border: #e0e0e0;
+      --text: #333333;
+      --muted: #999999;
+      --sidebar-w: 220px;
+      --up: #c80a1e;
+      --down: #4caf50;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: #1a1a2e;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+    }
+
+    .sidebar-logo {
+      padding: 24px 20px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-logo span {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--brand);
+      letter-spacing: -0.5px;
+    }
+
+    .sidebar-logo small {
+      display: block;
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+      margin-top: 2px;
+      font-weight: 400;
+    }
+
+    .sidebar-nav {
+      padding: 16px 12px;
+      flex: 1;
+    }
+
+    .nav-label {
+      font-size: 10px;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 12px 8px 6px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: rgba(255,255,255,0.55);
+      font-size: 13.5px;
+      transition: all 0.15s;
+      margin-bottom: 2px;
+    }
+
+    .nav-item:hover { background: rgba(255,255,255,0.06); color: #fff; }
+    .nav-item.active { background: var(--brand); color: #fff; }
+
+    .nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
+
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      font-size: 12px;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* ── MAIN ── */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 28px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .topbar-left h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .topbar-left p {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 1px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge-month {
+      background: var(--brand-light);
+      color: var(--brand);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .refresh-btn {
+      background: var(--brand);
+      color: #fff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    /* ── CONTENT ── */
+    .content {
+      padding: 24px 28px;
+      flex: 1;
+    }
+
+    /* ── VIEW TABS ── */
+    .view-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 24px;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      font-size: 13.5px;
+      cursor: pointer;
+      color: var(--muted);
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.15s;
+    }
+
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--brand); border-bottom-color: var(--brand); font-weight: 600; }
+
+    /* ── KPI CARDS ── */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .kpi-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 20px 22px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .kpi-value {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .kpi-delta {
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .kpi-delta.up { color: var(--brand); }
+    .kpi-delta.down { color: var(--down); }
+
+    .kpi-accent {
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--brand);
+    }
+
+    /* ── CHART ROW ── */
+    .chart-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .chart-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 22px 24px;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .chart-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .chart-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .legend {
+      display: flex;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .legend-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 5px;
+    }
+
+    /* ── TABLE ── */
+    .table-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 22px 24px;
+      margin-bottom: 20px;
+    }
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .filter-select {
+      border: 1px solid var(--border);
+      padding: 5px 10px;
+      font-size: 12px;
+      font-family: 'Noto Sans KR', sans-serif;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    thead th {
+      text-align: left;
+      padding: 10px 14px;
+      background: #f8f8f8;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+      border-bottom: 1px solid var(--border);
+    }
+
+    tbody td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #f0f0f0;
+      vertical-align: middle;
+    }
+
+    tbody tr:hover { background: #fafafa; }
+
+    .store-name { font-weight: 500; }
+
+    .delta-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .delta-badge.up { background: var(--brand-light); color: var(--brand); }
+    .delta-badge.down { background: #f0faf0; color: #388e3c; }
+
+    .bar-mini {
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      width: 80px;
+    }
+
+    .bar-mini-fill {
+      height: 100%;
+      background: var(--brand);
+      border-radius: 3px;
+    }
+
+    /* ── INSIGHT PANEL ── */
+    .insight-panel {
+      background: #fff8f8;
+      border-left: 3px solid var(--brand);
+      padding: 16px 20px;
+      margin-bottom: 20px;
+    }
+
+    .insight-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--brand);
+      margin-bottom: 10px;
+    }
+
+    .insight-item {
+      font-size: 13px;
+      color: var(--text);
+      padding: 5px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .insight-item::before {
+      content: "•";
+      color: var(--brand);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── CHART 2ROW ── */
+    .chart-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    /* hidden views */
+    .view-content { display: none; }
+    .view-content.active { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <span>iloom</span>
+    <small>부산사업소 대시보드</small>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">분석 메뉴</div>
+    <div class="nav-item active" onclick="setNav(this,'v1')">
+      <span class="icon">📊</span> 매장별 매출현황
+    </div>
+    <div class="nav-item" onclick="setNav(this,'v2')">
+      <span class="icon">⚔️</span> 경쟁사 비교
+    </div>
+    <div class="nav-item" onclick="setNav(this,'v3')">
+      <span class="icon">📈</span> 3개년 추이
+    </div>
+    <div class="nav-item" onclick="setNav(this,'v4')">
+      <span class="icon">🗺️</span> 지역별 점유율
+    </div>
+  </nav>
+  <div class="sidebar-footer">기준: 2026년 4월 · 자동갱신</div>
+</aside>
+
+<!-- ── MAIN ── -->
+<main class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1>부산사업소 매출 관리 대시보드</h1>
+      <p>이광호 · 리테일사업팀 · 데이터 기준: 확정납기일</p>
+    </div>
+    <div class="topbar-right">
+      <span class="badge-month">2026년 4월</span>
+      <button class="refresh-btn">🔄 데이터 갱신</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- VIEW TABS -->
+    <div class="view-tabs">
+      <div class="tab active" onclick="setTab(this,'v1')">매장별 매출현황</div>
+      <div class="tab" onclick="setTab(this,'v2')">경쟁사 비교</div>
+      <div class="tab" onclick="setTab(this,'v3')">3개년 추이</div>
+      <div class="tab" onclick="setTab(this,'v4')">지역별 점유율</div>
+    </div>
+
+    <!-- ════ VIEW 1 ════ -->
+    <div id="v1" class="view-content active">
+
+      <!-- KPI -->
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-accent"></div>
+          <div class="kpi-label">이번달 총매출</div>
+          <div class="kpi-value">1.58억</div>
+          <div class="kpi-delta up">▲ 12.4% 전년 동월 대비</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-accent"></div>
+          <div class="kpi-label">실적 발생 매장</div>
+          <div class="kpi-value">8개</div>
+          <div class="kpi-delta up">▲ 1개 전월 대비</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-accent"></div>
+          <div class="kpi-label">최고 매출 매장</div>
+          <div class="kpi-value">창원2</div>
+          <div class="kpi-delta up">▲ 3,120만 / 전년比 +8%</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-accent" style="background:#999"></div>
+          <div class="kpi-label">주의 매장</div>
+          <div class="kpi-value">통영1</div>
+          <div class="kpi-delta down">▼ 980만 / 전년比 -22%</div>
+        </div>
+      </div>
+
+      <!-- INSIGHT -->
+      <div class="insight-panel">
+        <div class="insight-title">💡 AI 인사이트</div>
+        <div class="insight-item">통영1 매출이 전월 대비 -22% 감소했습니다. 확인이 필요합니다.</div>
+        <div class="insight-item">하단3이 3개월 연속 성장세입니다 (2월 2,100만 → 3월 2,450만 → 4월 2,850만)</div>
+        <div class="insight-item">창원2가 부산사업소 내 최고 매출 매장으로 전월 대비 +5%p 점유율 상승 중입니다.</div>
+      </div>
+
+      <!-- CHARTS -->
+      <div class="chart-row">
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">매장별 이번달 vs 전년 동월 매출</div>
+              <div class="chart-sub">단위: 만원</div>
+            </div>
+            <div class="legend">
+              <span><span class="legend-dot" style="background:#c80a1e"></span>2026년 4월</span>
+              <span><span class="legend-dot" style="background:#e0e0e0"></span>2025년 4월</span>
+            </div>
+          </div>
+          <canvas id="chart1" height="200"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">전월 대비 증감률</div>
+              <div class="chart-sub">매장별 MoM 변화</div>
+            </div>
+          </div>
+          <canvas id="chart2" height="200"></canvas>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-card">
+        <div class="table-header">
+          <div class="chart-title">매장별 상세 현황</div>
+          <select class="filter-select">
+            <option>2026년 4월</option>
+            <option>2026년 3월</option>
+            <option>2026년 2월</option>
+          </select>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>매장</th>
+              <th>이번달 매출</th>
+              <th>전년 동월</th>
+              <th>YoY</th>
+              <th>전월 대비</th>
+              <th>비중</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="store-name">창원2</td>
+              <td><b>3,120만</b></td>
+              <td>2,889만</td>
+              <td><span class="delta-badge up">▲ 8.0%</span></td>
+              <td><span class="delta-badge up">▲ 5.2%</span></td>
+              <td><div class="bar-mini"><div class="bar-mini-fill" style="width:100%"></div></div></td>
+            </tr>
+            <tr>
+              <td class="store-name">하단3</td>
+              <td><b>2,850만</b></td>
+              <td>2,291만</td>
+              <td><span class="delta-badge up">▲ 24.4%</span></td>
+              <td><span class="delta-badge up">▲ 16.3%</span></td>
+              <td><div class="bar-mini"><div class="bar-mini-fill" style="width:91%"></div></div></td>
+            </tr>
+            <tr>
+              <td class="store-name">연산1</td>
+              <td><b>2,280만</b></td>
+              <td>2,150만</td>
+              <td><span class="delta-badge up">▲ 6.0%</span></td>
+              <td><span class="delta-badge up">▲ 3.1%</span></td>
+              <td><div class="bar-mini"><div class="bar-mini-fill" style="width:73%"></div></div></td>
+            </tr>
+            <tr>
+              <td class="store-name">사상1</td>
+              <td><b>1,920만</b></td>
+              <td>2,010만</td>
+              <td><span class="delta-badge down">▼ 4.5%</span></td>
+              <td><span class="delta-badge down">▼ 2.1%</span></td>
+              <td><div class="bar-mini"><div class="bar-mini-fill" style="width:62%"></div></div></td>
+            </tr>
+            <tr>
+              <td class="store-name">양산1</td>
+              <td><b>1,890만</b></td>
+              <td>1,750만</td>
+              <td><span class="delta-badge up">▲ 8.0%</span></td>
+              <td><span class="delta-badge up">▲ 4.4%</span></td>
+              <td><div class="bar-mini"><div class="bar-mini-fill" style="width:61%"></div></div></td>
+            </tr>
+            <tr>
+              <td class="store-name">진주1</td>
+              <td><b>1,560만</b></td>
+              <td>1,620만</td>
+              <td><span class="delta-badge down">▼ 3.7%</span></td>
+              <td><span class="delta-badge down">▼ 1.9%</span></td>
+              <td><div class="bar-mini"><div class="bar-mini-fill" style="width:50%"></div></div></td>
+            </tr>
+            <tr>
+              <td class="store-name">거제1</td>
+              <td><b>1,240만</b></td>
+              <td>1,180만</td>
+              <td><span class="delta-badge up">▲ 5.1%</span></td>
+              <td><span class="delta-badge up">▲ 2.3%</span></td>
+              <td><div class="bar-mini"><div class="bar-mini-fill" style="width:40%"></div></div></td>
+            </tr>
+            <tr>
+              <td class="store-name">통영1</td>
+              <td><b>980만</b></td>
+              <td>1,256만</td>
+              <td><span class="delta-badge down">▼ 22.0%</span></td>
+              <td><span class="delta-badge down">▼ 18.5%</span></td>
+              <td><div class="bar-mini"><div class="bar-mini-fill" style="width:31%; background:#999"></div></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ════ VIEW 2 ════ -->
+    <div id="v2" class="view-content">
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-accent"></div>
+          <div class="kpi-label">일룸 지역 점유율</div>
+          <div class="kpi-value">34%</div>
+          <div class="kpi-delta up">▲ 1.2%p 전월 대비</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-accent" style="background:#888"></div>
+          <div class="kpi-label">1위 경쟁사</div>
+          <div class="kpi-value">한샘 41%</div>
+          <div class="kpi-delta down">▼ 0.8%p 전월 대비</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-accent"></div>
+          <div class="kpi-label">점유율 격차</div>
+          <div class="kpi-value">-7%p</div>
+          <div class="kpi-delta up">▲ 좁혀지는 중</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-accent"></div>
+          <div class="kpi-label">일룸 강세 지역</div>
+          <div class="kpi-value">강서구</div>
+          <div class="kpi-delta up">▲ 점유율 52%</div>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">매장별 일룸 vs 경쟁사 매출 비교</div>
+              <div class="chart-sub">단위: 만원 · 2026년 4월</div>
+            </div>
+          </div>
+          <canvas id="chart3" height="220"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">브랜드별 점유율</div>
+              <div class="chart-sub">부산사업소 관할 지역</div>
+            </div>
+          </div>
+          <canvas id="chart4" height="220"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ VIEW 3 ════ -->
+    <div id="v3" class="view-content">
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-accent"></div>
+          <div class="kpi-label">올해 누계 vs 전년 동기</div>
+          <div class="kpi-value">+8.3%</div>
+          <div class="kpi-delta up">▲ 1~4월 누계 기준</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-accent"></div>
+          <div class="kpi-label">전년 대비 성장 매장</div>
+          <div class="kpi-value">6 / 8개</div>
+          <div class="kpi-delta up">▲ 75% 매장 성장세</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-accent"></div>
+          <div class="kpi-label">최근 3개월 추세</div>
+          <div class="kpi-value">상승</div>
+          <div class="kpi-delta up">▲ 2월→3월→4월 연속</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-accent" style="background:#888"></div>
+          <div class="kpi-label">3개년 성장률(CAGR)</div>
+          <div class="kpi-value">+6.1%</div>
+          <div class="kpi-delta up">▲ 2024→2026 연평균</div>
+        </div>
+      </div>
+
+      <div class="chart-card" style="margin-bottom:16px">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">3개년 월별 매출 추이</div>
+            <div class="chart-sub">부산사업소 전체 · 단위: 만원</div>
+          </div>
+          <div class="legend">
+            <span><span class="legend-dot" style="background:#c80a1e"></span>2026년</span>
+            <span><span class="legend-dot" style="background:#888"></span>2025년</span>
+            <span><span class="legend-dot" style="background:#ccc"></span>2024년</span>
+          </div>
+        </div>
+        <canvas id="chart5" height="160"></canvas>
+      </div>
+    </div>
+
+    <!-- ════ VIEW 4 ════ -->
+    <div id="v4" class="view-content">
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-accent"></div>
+          <div class="kpi-label">점유율 1위 지역</div>
+          <div class="kpi-value">강서구</div>
+          <div class="kpi-delta up">▲ 일룸 52%</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-accent" style="background:#999"></div>
+          <div class="kpi-label">공략 필요 지역</div>
+          <div class="kpi-value">중구</div>
+          <div class="kpi-delta down">▼ 일룸 18%</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-accent"></div>
+          <div class="kpi-label">점유율 상승 지역</div>
+          <div class="kpi-value">사상구</div>
+          <div class="kpi-delta up">▲ +3.2%p 전월 대비</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-accent" style="background:#999"></div>
+          <div class="kpi-label">점유율 하락 지역</div>
+          <div class="kpi-value">남구</div>
+          <div class="kpi-delta down">▼ -2.1%p 전월 대비</div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">지역별 브랜드 점유율</div>
+            <div class="chart-sub">2026년 4월 기준</div>
+          </div>
+        </div>
+        <canvas id="chart6" height="200"></canvas>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+  // ── NAV & TAB SWITCH ──
+  function setNav(el, viewId) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+    switchView(viewId);
+  }
+
+  function setTab(el, viewId) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    switchView(viewId);
+  }
+
+  function switchView(viewId) {
+    document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
+    document.getElementById(viewId).classList.add('active');
+    // sync nav and tab
+    document.querySelectorAll('.nav-item').forEach((n,i) => {
+      const ids = ['v1','v2','v3','v4'];
+      if(ids[i] === viewId) n.classList.add('active');
+      else n.classList.remove('active');
+    });
+    document.querySelectorAll('.tab').forEach((t,i) => {
+      const ids = ['v1','v2','v3','v4'];
+      if(ids[i] === viewId) t.classList.add('active');
+      else t.classList.remove('active');
+    });
+  }
+
+  const RED = '#c80a1e';
+  const GRAY = '#e0e0e0';
+  const GRAY2 = '#888888';
+  const GRAY3 = '#cccccc';
+
+  // ── CHART 1: 매장별 이번달 vs 전년동월 ──
+  new Chart(document.getElementById('chart1'), {
+    type: 'bar',
+    data: {
+      labels: ['창원2','하단3','연산1','사상1','양산1','진주1','거제1','통영1'],
+      datasets: [
+        { label:'2026년 4월', data:[3120,2850,2280,1920,1890,1560,1240,980], backgroundColor: RED },
+        { label:'2025년 4월', data:[2889,2291,2150,2010,1750,1620,1180,1256], backgroundColor: GRAY }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false } },
+        y: { grid: { color: '#f0f0f0' }, ticks: { callback: v => v.toLocaleString() } }
+      }
+    }
+  });
+
+  // ── CHART 2: 전월 대비 증감률 ──
+  new Chart(document.getElementById('chart2'), {
+    type: 'bar',
+    data: {
+      labels: ['하단3','창원2','양산1','연산1','거제1','진주1','사상1','통영1'],
+      datasets: [{
+        data: [16.3, 5.2, 4.4, 3.1, 2.3, -1.9, -2.1, -18.5],
+        backgroundColor: [RED,RED,RED,RED,RED,'#bbb','#bbb','#999']
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: '#f0f0f0' }, ticks: { callback: v => v+'%' } },
+        y: { grid: { display: false } }
+      }
+    }
+  });
+
+  // ── CHART 3: 매장별 일룸 vs 경쟁사 ──
+  new Chart(document.getElementById('chart3'), {
+    type: 'bar',
+    data: {
+      labels: ['창원2','하단3','연산1','사상1','양산1','진주1','거제1','통영1'],
+      datasets: [
+        { label:'일룸', data:[3120,2850,2280,1920,1890,1560,1240,980], backgroundColor: RED },
+        { label:'한샘', data:[3800,1950,2800,2200,1600,1900,1500,1400], backgroundColor: GRAY2 },
+        { label:'기타', data:[900,600,700,500,800,400,600,700], backgroundColor: GRAY }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { position: 'top', labels: { boxWidth: 12 } } },
+      scales: {
+        x: { grid: { display: false } },
+        y: { grid: { color: '#f0f0f0' } }
+      }
+    }
+  });
+
+  // ── CHART 4: 브랜드별 점유율 도넛 ──
+  new Chart(document.getElementById('chart4'), {
+    type: 'doughnut',
+    data: {
+      labels: ['일룸','한샘','현대리바트','기타'],
+      datasets: [{
+        data: [34, 41, 15, 10],
+        backgroundColor: [RED, GRAY2, '#bbbbbb', GRAY],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      cutout: '65%',
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, padding: 16 } }
+      }
+    }
+  });
+
+  // ── CHART 5: 3개년 월별 추이 ──
+  const months = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  new Chart(document.getElementById('chart5'), {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [
+        {
+          label: '2026년', data: [12800,13500,15200,15840,null,null,null,null,null,null,null,null],
+          borderColor: RED, backgroundColor: 'rgba(200,10,30,0.08)',
+          tension: 0.3, fill: true, pointRadius: 4
+        },
+        {
+          label: '2025년', data: [11200,12100,13800,14620,14900,13200,15800,16200,14500,15900,16800,17200],
+          borderColor: GRAY2, backgroundColor: 'transparent',
+          tension: 0.3, borderDash:[4,3], pointRadius: 3
+        },
+        {
+          label: '2024년', data: [10100,10800,12200,13500,13100,12400,14800,15100,13600,14800,15600,16100],
+          borderColor: GRAY3, backgroundColor: 'transparent',
+          tension: 0.3, borderDash:[2,4], pointRadius: 3
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { position: 'top', labels: { boxWidth: 12 } } },
+      scales: {
+        x: { grid: { display: false } },
+        y: { grid: { color: '#f0f0f0' }, ticks: { callback: v => (v/10000).toFixed(0)+'억' } }
+      }
+    }
+  });
+
+  // ── CHART 6: 지역별 브랜드 점유율 스택 ──
+  new Chart(document.getElementById('chart6'), {
+    type: 'bar',
+    data: {
+      labels: ['강서구','사상구','연제구','하단/사하','양산','진주','창원','거제','통영','중구'],
+      datasets: [
+        { label:'일룸', data:[52,38,35,42,45,36,40,38,32,18], backgroundColor: RED },
+        { label:'한샘', data:[28,35,40,32,30,38,35,38,42,48], backgroundColor: GRAY2 },
+        { label:'기타', data:[20,27,25,26,25,26,25,24,26,34], backgroundColor: GRAY }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { position: 'top', labels: { boxWidth: 12 } } },
+      scales: {
+        x: { stacked: true, grid: { display: false } },
+        y: { stacked: true, max: 100, ticks: { callback: v => v+'%' }, grid: { color: '#f0f0f0' } }
+      }
+    }
+  });
+</script>
+</body>
+</html>

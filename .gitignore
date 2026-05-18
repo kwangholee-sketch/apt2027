@@ -2,3 +2,5 @@ node_modules/
 pdfs/
 *.zip
 *.xlsx
+.claude/
+iloom-workspace-claude/
