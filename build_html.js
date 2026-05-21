@@ -18,7 +18,8 @@ function lookupCeiling(rawName) {
 }
 
 function ceilingBadge(ceiling, source) {
-  const is24  = ceiling === '2.4m';
+  const val   = parseFloat(ceiling);
+  const is24  = val >= 2.4;
   const isPDF = source.includes('PDF확인');
   const color = is24 ? '#1a6b9e' : '#4a7c3f';
   const bg    = is24 ? '#dbeeff' : '#e8f5e2';
@@ -112,7 +113,7 @@ const html = `<!DOCTYPE html>
 
   <div class="search-bar">
     <select id="filterRegion" onchange="filterTable()">
-      <option value="">전체 지역</option>
+      <option value="">입주 지역</option>
       <option value="서울">서울</option>
       <option value="경기">경기</option>
       <option value="인천">인천</option>
@@ -131,12 +132,12 @@ const html = `<!DOCTYPE html>
       <option value="제주">제주</option>
     </select>
     <select id="filterYear" onchange="filterTable()">
-      <option value="">전체 연도</option>
+      <option value="">입주 연도</option>
       <option value="2026년">2026년</option>
       <option value="2027년">2027년</option>
     </select>
     <select id="filterMonth" onchange="filterTable()">
-      <option value="">전체 월</option>
+      <option value="">입주 월</option>
       <option value=" 1월"> 1월</option>
       <option value=" 2월"> 2월</option>
       <option value=" 3월"> 3월</option>
@@ -222,10 +223,12 @@ ${rows}
       const nm   = r.cells[1].textContent;
       const mv   = r.cells[2].textContent;
       const ch   = r.cells[4] ? r.cells[4].textContent.trim() : '';
+      const chVal = parseFloat(ch);
+      const ceilMatch = !ceil || (ceil === '2.4m' ? chVal >= 2.4 : ch.includes(ceil));
       const show = (!kw     || loc.toLowerCase().includes(kw) || nm.toLowerCase().includes(kw))
                 && (!year   || mv.startsWith(year))
                 && (!mon    || mv.endsWith(mon))
-                && (!ceil   || ch.includes(ceil))
+                && ceilMatch
                 && (!region || loc.startsWith(region));
       r.style.display = show ? '' : 'none';
       if (show) visible.push(r);

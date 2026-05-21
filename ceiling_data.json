@@ -500,8 +500,8 @@
     "addr": "부산 남구 우암동",
     "movein": "2026년 1월",
     "households": 3048,
-    "ceiling": "2.4m",
-    "source": "조사(위브더제니스프리미엄)"
+    "ceiling": "2.3m",
+    "source": "PDF확인(거실기준2.3m명시)"
   },
   {
     "name": "벨루미체첨단",
@@ -636,24 +636,24 @@
     "addr": "대구 수성구 범어동",
     "movein": "2026년 2월",
     "households": 399,
-    "ceiling": "2.3m",
-    "source": "추정(브랜드기준)"
+    "ceiling": "2.4m",
+    "source": "조사(주상복합기준)"
   },
   {
     "name": "힐스테이트칠성더오페라(주상복합)",
     "addr": "대구 북구 칠성동",
     "movein": "2026년 2월",
     "households": 577,
-    "ceiling": "2.3m",
-    "source": "추정(브랜드기준)"
+    "ceiling": "2.4m",
+    "source": "조사(주상복합기준)"
   },
   {
     "name": "힐스테이트대명센트럴2차(주상복합)",
     "addr": "대구 남구 대명동",
     "movein": "2026년 2월",
     "households": 977,
-    "ceiling": "2.3m",
-    "source": "추정(브랜드기준)"
+    "ceiling": "2.4m",
+    "source": "조사(주상복합기준)"
   },
   {
     "name": "광산센트럴파크",
@@ -908,8 +908,8 @@
     "addr": "대구 동구 신천동",
     "movein": "2026년 4월",
     "households": 481,
-    "ceiling": "2.3m",
-    "source": "추정(브랜드기준)"
+    "ceiling": "2.4m",
+    "source": "조사(주상복합기준)"
   },
   {
     "name": "벤처밸리푸르지오",
@@ -1692,8 +1692,8 @@
     "addr": "서울 서초구",
     "movein": "2027년 11월",
     "households": 5007,
-    "ceiling": "2.4m",
-    "source": "조사(현대건설DH최고급)"
+    "ceiling": "2.45m",
+    "source": "PDF확인(단위세대층고2450mm명시)"
   },
   {
     "name": "양주용암영무예다음더퍼스트",
@@ -2740,8 +2740,8 @@
     "addr": "충남 천안 서북구 성정동",
     "movein": "2027년 8월",
     "households": 999,
-    "ceiling": "2.3m",
-    "source": "추정(브랜드기준)"
+    "ceiling": "2.4m",
+    "source": "조사(주상복합기준)"
   },
   {
     "name": "힐스테이트도안리버파크5단지",
