@@ -35,19 +35,28 @@ const researchData = {
   '부산에코델타시티대방엘리움리버뷰':   { ceiling: '2.4m', source: '조사(대방엘리움브랜드)' },
 };
 
-// apt_list.txt 읽기
-const aptList = fs.readFileSync(path.join(__dirname, 'apt_list.txt'), 'utf8')
-  .split('\n')
-  .filter(l => l.trim())
-  .map(l => {
-    const parts = l.split('|');
-    return {
-      name: parts[0].trim(),
-      addr: parts[1]?.trim() || '',
-      movein: parts[2]?.trim() || '',
-      households: parseInt(parts[3]?.trim() || '0')
-    };
-  });
+function readAptFile(filename) {
+  const filepath = path.join(__dirname, filename);
+  if (!fs.existsSync(filepath)) return [];
+  return fs.readFileSync(filepath, 'utf8')
+    .split('\n')
+    .filter(l => l.trim())
+    .map(l => {
+      const parts = l.split('|');
+      return {
+        name: parts[0].trim(),
+        addr: parts[1]?.trim() || '',
+        movein: parts[2]?.trim() || '',
+        households: parseInt(parts[3]?.trim() || '0')
+      };
+    });
+}
+
+// apt_list_2026.txt + apt_list.txt(2027) 합산
+const aptList = [
+  ...readAptFile('apt_list_2026.txt'),
+  ...readAptFile('apt_list.txt'),
+];
 
 // 각 아파트 천장고 결정
 const results = [];
