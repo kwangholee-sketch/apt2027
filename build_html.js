@@ -27,13 +27,22 @@ function ceilingBadge(ceiling, source) {
   return `<span class="ceiling-badge" style="background:${bg};color:${color};padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;cursor:default;" title="${title}">${ceiling}${star}</span>`;
 }
 
-// apt_list.txt 읽기
-const aptList = fs.readFileSync(path.join(__dirname, 'apt_list.txt'), 'utf8')
-  .split('\n').filter(l => l.trim())
-  .map(l => {
-    const [name, addr, movein, hh] = l.split('|');
-    return { name: name.trim(), addr: addr?.trim() || '', movein: movein?.trim() || '', hh: hh?.trim() || '0' };
-  });
+function readAptList(filename) {
+  const filepath = path.join(__dirname, filename);
+  if (!fs.existsSync(filepath)) return [];
+  return fs.readFileSync(filepath, 'utf8')
+    .split('\n').filter(l => l.trim())
+    .map(l => {
+      const [name, addr, movein, hh] = l.split('|');
+      return { name: name.trim(), addr: addr?.trim() || '', movein: movein?.trim() || '', hh: hh?.trim() || '0' };
+    });
+}
+
+// 2026 + 2027 합산 후 입주월 오름차순 정렬
+const aptList = [
+  ...readAptList('apt_list_2026.txt'),
+  ...readAptList('apt_list.txt'),
+].sort((a, b) => a.movein.localeCompare(b.movein, 'ko'));
 
 // 총 세대수
 const totalHH = aptList.reduce((s, a) => s + (parseInt(a.hh) || 0), 0);
@@ -54,7 +63,7 @@ const html = `<!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>APT 입주물량 - 전국 2027년</title>
+  <title>APT 입주물량 - 전국 2026~2027년</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Malgun Gothic', sans-serif; font-size: 13px; background: #f5f5f5; color: #333; padding: 24px; }
@@ -92,7 +101,7 @@ const html = `<!DOCTYPE html>
 <div class="wrap">
   <h1>APT 입주물량</h1>
   <p class="notice">해당 입주물량은 월 단위 업데이트 데이터로 실시간 모든 입주예정단지를 반영하지 않을 수 있습니다. 자료 이용에 참고 바랍니다.</p>
-  <p class="source">출처 : 분양물량조사 &nbsp;|&nbsp; 전국 기준 2027년 1월~12월 &nbsp;|&nbsp; 데이터 업데이트 : ${updatedAt}</p>
+  <p class="source">출처 : 분양물량조사 &nbsp;|&nbsp; 전국 기준 2026~2027년 &nbsp;|&nbsp; 데이터 업데이트 : ${updatedAt}</p>
   <p class="notice" style="margin-bottom:16px;">
     천장고 기준 :
     <span style="background:#dbeeff;color:#1a6b9e;padding:1px 7px;border-radius:10px;font-size:11px;font-weight:600;">2.4m</span>
@@ -121,20 +130,25 @@ const html = `<!DOCTYPE html>
       <option value="광주">광주</option>
       <option value="제주">제주</option>
     </select>
+    <select id="filterYear" onchange="filterTable()">
+      <option value="">전체 연도</option>
+      <option value="2026년">2026년</option>
+      <option value="2027년">2027년</option>
+    </select>
     <select id="filterMonth" onchange="filterTable()">
       <option value="">전체 월</option>
-      <option value="2027년 1월">1월</option>
-      <option value="2027년 2월">2월</option>
-      <option value="2027년 3월">3월</option>
-      <option value="2027년 4월">4월</option>
-      <option value="2027년 5월">5월</option>
-      <option value="2027년 6월">6월</option>
-      <option value="2027년 7월">7월</option>
-      <option value="2027년 8월">8월</option>
-      <option value="2027년 9월">9월</option>
-      <option value="2027년 10월">10월</option>
-      <option value="2027년 11월">11월</option>
-      <option value="2027년 12월">12월</option>
+      <option value=" 1월"> 1월</option>
+      <option value=" 2월"> 2월</option>
+      <option value=" 3월"> 3월</option>
+      <option value=" 4월"> 4월</option>
+      <option value=" 5월"> 5월</option>
+      <option value=" 6월"> 6월</option>
+      <option value=" 7월"> 7월</option>
+      <option value=" 8월"> 8월</option>
+      <option value=" 9월"> 9월</option>
+      <option value=" 10월"> 10월</option>
+      <option value=" 11월"> 11월</option>
+      <option value=" 12월"> 12월</option>
     </select>
     <select id="filterCeil" onchange="filterTable()">
       <option value="">전체 천장고</option>
@@ -197,6 +211,7 @@ ${rows}
 
   function filterTable() {
     const kw     = document.getElementById('searchInput').value.toLowerCase();
+    const year   = document.getElementById('filterYear').value;
     const mon    = document.getElementById('filterMonth').value;
     const region = document.getElementById('filterRegion').value;
     const ceil   = document.getElementById('filterCeil').value;
@@ -208,7 +223,8 @@ ${rows}
       const mv   = r.cells[2].textContent;
       const ch   = r.cells[4] ? r.cells[4].textContent.trim() : '';
       const show = (!kw     || loc.toLowerCase().includes(kw) || nm.toLowerCase().includes(kw))
-                && (!mon    || mv.includes(mon))
+                && (!year   || mv.startsWith(year))
+                && (!mon    || mv.endsWith(mon))
                 && (!ceil   || ch.includes(ceil))
                 && (!region || loc.startsWith(region));
       r.style.display = show ? '' : 'none';
@@ -228,5 +244,5 @@ ${rows}
 </html>`;
 
 fs.writeFileSync(path.join(__dirname, 'index.html'), html, 'utf8');
-fs.writeFileSync(path.join(__dirname, '전국_아파트_입주물량_2027.html'), html, 'utf8');
+fs.writeFileSync(path.join(__dirname, '전국_아파트_입주물량_2026-2027.html'), html, 'utf8');
 console.log(`✅ HTML 생성 완료 (${aptList.length}개 단지, ${totalHH.toLocaleString()}세대)`);
