@@ -348,8 +348,8 @@
     "addr": "전북 전주 덕진구 송천동",
     "movein": "2026년 12월",
     "households": 268,
-    "ceiling": "2.3m",
-    "source": "추정(브랜드기준)"
+    "ceiling": "2.4m",
+    "source": "조사(주상복합기준)"
   },
   {
     "name": "하당르파르크시그니처",
@@ -484,16 +484,16 @@
     "addr": "충남 아산 모종동",
     "movein": "2026년 1월",
     "households": 299,
-    "ceiling": "2.3m",
-    "source": "추정(브랜드기준)"
+    "ceiling": "2.4m",
+    "source": "조사(주상복합기준)"
   },
   {
     "name": "e편한세상명덕역퍼스트마크(주상복합)",
     "addr": "대구 남구 대명동",
     "movein": "2026년 1월",
     "households": 1758,
-    "ceiling": "2.3m",
-    "source": "추정(브랜드기준)"
+    "ceiling": "2.4m",
+    "source": "조사(주상복합기준)"
   },
   {
     "name": "두산위브더제니스오션시티",
@@ -604,8 +604,8 @@
     "addr": "대전 서구 용문동",
     "movein": "2026년 2월",
     "households": 138,
-    "ceiling": "2.3m",
-    "source": "추정(브랜드기준)"
+    "ceiling": "2.4m",
+    "source": "조사(주상복합기준)"
   },
   {
     "name": "더샵신문그리니티",
@@ -772,8 +772,8 @@
     "addr": "경남 거제 장승포동",
     "movein": "2026년 3월",
     "households": 299,
-    "ceiling": "2.3m",
-    "source": "추정(브랜드기준)"
+    "ceiling": "2.4m",
+    "source": "조사(주상복합기준)"
   },
   {
     "name": "e편한세상삼천포오션프라임",
@@ -788,8 +788,8 @@
     "addr": "대구 달서구 본리동",
     "movein": "2026년 3월",
     "households": 993,
-    "ceiling": "2.3m",
-    "source": "추정(브랜드기준)"
+    "ceiling": "2.4m",
+    "source": "조사(주상복합기준)"
   },
   {
     "name": "에코델타시티대성베르힐",
@@ -892,8 +892,8 @@
     "addr": "대구 북구 칠성동",
     "movein": "2026년 4월",
     "households": 245,
-    "ceiling": "2.3m",
-    "source": "추정(브랜드기준)"
+    "ceiling": "2.4m",
+    "source": "조사(주상복합기준)"
   },
   {
     "name": "대명자이그랜드시티",
@@ -1076,8 +1076,8 @@
     "addr": "부산 해운대구 송정동",
     "movein": "2026년 5월",
     "households": 184,
-    "ceiling": "2.3m",
-    "source": "추정(브랜드기준)"
+    "ceiling": "2.4m",
+    "source": "조사(주상복합기준)"
   },
   {
     "name": "군산경남아너스빌디오션",
@@ -1156,24 +1156,24 @@
     "addr": "대전 동구 삼성동",
     "movein": "2026년 6월",
     "households": 400,
-    "ceiling": "2.3m",
-    "source": "추정(브랜드기준)"
+    "ceiling": "2.4m",
+    "source": "조사(주상복합기준)"
   },
   {
     "name": "울진후포오션더캐슬(주상복합)",
     "addr": "경북 울진 후포면",
     "movein": "2026년 6월",
     "households": 123,
-    "ceiling": "2.3m",
-    "source": "추정(브랜드기준)"
+    "ceiling": "2.4m",
+    "source": "조사(주상복합기준)"
   },
   {
     "name": "더샵달서센트엘로(주상복합)",
     "addr": "대구 달서구 본동",
     "movein": "2026년 6월",
     "households": 272,
-    "ceiling": "2.3m",
-    "source": "추정(브랜드기준)"
+    "ceiling": "2.4m",
+    "source": "조사(주상복합기준)"
   },
   {
     "name": "드파인광안",
@@ -1212,8 +1212,8 @@
     "addr": "울산 울주 삼남읍",
     "movein": "2026년 6월",
     "households": 344,
-    "ceiling": "2.3m",
-    "source": "추정(브랜드기준)"
+    "ceiling": "2.4m",
+    "source": "조사(주상복합기준)"
   },
   {
     "name": "문수로푸르지오어반피스",
@@ -1444,8 +1444,8 @@
     "addr": "충북 청주 흥덕구 송절동",
     "movein": "2026년 8월",
     "households": 602,
-    "ceiling": "2.3m",
-    "source": "추정(브랜드기준)"
+    "ceiling": "2.4m",
+    "source": "조사(주상복합기준)"
   },
   {
     "name": "논산푸르지오더퍼스트",
@@ -1948,8 +1948,8 @@
     "addr": "부산 동구 범일동",
     "movein": "2027년 12월",
     "households": 856,
-    "ceiling": "2.3m",
-    "source": "추정(브랜드기준)"
+    "ceiling": "2.4m",
+    "source": "조사(주상복합기준)"
   },
   {
     "name": "송암공원중흥S-클래스SK뷰",
@@ -1988,8 +1988,8 @@
     "addr": "충북 청주 흥덕구 송절동",
     "movein": "2027년 1월",
     "households": 1034,
-    "ceiling": "2.3m",
-    "source": "추정(브랜드기준)"
+    "ceiling": "2.4m",
+    "source": "조사(주상복합기준)"
   },
   {
     "name": "청주가경아이파크6단지",
@@ -2140,8 +2140,8 @@
     "addr": "부산 동래구 온천동",
     "movein": "2027년 2월",
     "households": 160,
-    "ceiling": "2.3m",
-    "source": "추정(브랜드기준)"
+    "ceiling": "2.4m",
+    "source": "조사(주상복합기준)"
   },
   {
     "name": "힐스테이트문수로센트럴1단지",
