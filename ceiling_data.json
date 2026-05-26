@@ -348,8 +348,8 @@
     "addr": "전북 전주 덕진구 송천동",
     "movein": "2026년 12월",
     "households": 268,
-    "ceiling": "2.4m",
-    "source": "조사(주상복합기준)"
+    "ceiling": "2.3m",
+    "source": "PDF확인(층고증가없음-상한제적용)"
   },
   {
     "name": "하당르파르크시그니처",
@@ -484,16 +484,16 @@
     "addr": "충남 아산 모종동",
     "movein": "2026년 1월",
     "households": 299,
-    "ceiling": "2.4m",
-    "source": "조사(주상복합기준)"
+    "ceiling": "2.3m",
+    "source": "PDF확인(비상한제-층고광고없음+지방충남기준)"
   },
   {
     "name": "e편한세상명덕역퍼스트마크(주상복합)",
     "addr": "대구 남구 대명동",
     "movein": "2026년 1월",
     "households": 1758,
-    "ceiling": "2.4m",
-    "source": "조사(주상복합기준)"
+    "ceiling": "2.3m",
+    "source": "PDF확인(층고증가없음+e편한세상브랜드)"
   },
   {
     "name": "두산위브더제니스오션시티",
@@ -604,8 +604,8 @@
     "addr": "대전 서구 용문동",
     "movein": "2026년 2월",
     "households": 138,
-    "ceiling": "2.4m",
-    "source": "조사(주상복합기준)"
+    "ceiling": "2.3m",
+    "source": "PDF확인(비상한제-층고광고없음+지방대전기준)"
   },
   {
     "name": "더샵신문그리니티",
@@ -636,24 +636,24 @@
     "addr": "대구 수성구 범어동",
     "movein": "2026년 2월",
     "households": 399,
-    "ceiling": "2.4m",
-    "source": "조사(주상복합기준)"
+    "ceiling": "2.3m",
+    "source": "PDF확인(천장높이2300mm명시)"
   },
   {
     "name": "힐스테이트칠성더오페라(주상복합)",
     "addr": "대구 북구 칠성동",
     "movein": "2026년 2월",
     "households": 577,
-    "ceiling": "2.4m",
-    "source": "조사(주상복합기준)"
+    "ceiling": "2.3m",
+    "source": "PDF확인(층고증가없음+힐스테이트브랜드)"
   },
   {
     "name": "힐스테이트대명센트럴2차(주상복합)",
     "addr": "대구 남구 대명동",
     "movein": "2026년 2월",
     "households": 977,
-    "ceiling": "2.4m",
-    "source": "조사(주상복합기준)"
+    "ceiling": "2.3m",
+    "source": "조사(힐스테이트브랜드3개PDF확인-2.3m)"
   },
   {
     "name": "광산센트럴파크",
@@ -772,8 +772,8 @@
     "addr": "경남 거제 장승포동",
     "movein": "2026년 3월",
     "households": 299,
-    "ceiling": "2.4m",
-    "source": "조사(주상복합기준)"
+    "ceiling": "2.3m",
+    "source": "PDF확인(비상한제-층고광고없음+지방경남기준)"
   },
   {
     "name": "e편한세상삼천포오션프라임",
@@ -788,8 +788,8 @@
     "addr": "대구 달서구 본리동",
     "movein": "2026년 3월",
     "households": 993,
-    "ceiling": "2.4m",
-    "source": "조사(주상복합기준)"
+    "ceiling": "2.3m",
+    "source": "PDF확인(층고증가없음+푸르지오브랜드)"
   },
   {
     "name": "에코델타시티대성베르힐",
@@ -893,7 +893,7 @@
     "movein": "2026년 4월",
     "households": 245,
     "ceiling": "2.4m",
-    "source": "조사(주상복합기준)"
+    "source": "PDF확인(천장고2.4M명시)"
   },
   {
     "name": "대명자이그랜드시티",
@@ -908,8 +908,8 @@
     "addr": "대구 동구 신천동",
     "movein": "2026년 4월",
     "households": 481,
-    "ceiling": "2.4m",
-    "source": "조사(주상복합기준)"
+    "ceiling": "2.3m",
+    "source": "조사(힐스테이트브랜드3개PDF확인-2.3m)"
   },
   {
     "name": "벤처밸리푸르지오",
@@ -980,8 +980,8 @@
     "addr": "경기 시흥 정왕동",
     "movein": "2026년 5월",
     "households": 400,
-    "ceiling": "2.4m",
-    "source": "조사(주상복합기준)"
+    "ceiling": "2.3m",
+    "source": "조사(푸르지오브랜드2개PDF확인-2.3m)"
   },
   {
     "name": "안양자이더포레스트",
@@ -1076,8 +1076,8 @@
     "addr": "부산 해운대구 송정동",
     "movein": "2026년 5월",
     "households": 184,
-    "ceiling": "2.4m",
-    "source": "조사(주상복합기준)"
+    "ceiling": "2.3m",
+    "source": "PDF확인(비상한제-층고광고없음+지방부산기준)"
   },
   {
     "name": "군산경남아너스빌디오션",
@@ -1156,24 +1156,24 @@
     "addr": "대전 동구 삼성동",
     "movein": "2026년 6월",
     "households": 400,
-    "ceiling": "2.4m",
-    "source": "조사(주상복합기준)"
+    "ceiling": "2.3m",
+    "source": "PDF확인(천장고2.3M명시)"
   },
   {
     "name": "울진후포오션더캐슬(주상복합)",
     "addr": "경북 울진 후포면",
     "movein": "2026년 6월",
     "households": 123,
-    "ceiling": "2.4m",
-    "source": "조사(주상복합기준)"
+    "ceiling": "2.3m",
+    "source": "PDF확인(비상한제-층고광고없음+지방경북기준)"
   },
   {
     "name": "더샵달서센트엘로(주상복합)",
     "addr": "대구 달서구 본동",
     "movein": "2026년 6월",
     "households": 272,
-    "ceiling": "2.4m",
-    "source": "조사(주상복합기준)"
+    "ceiling": "2.3m",
+    "source": "PDF확인(천장높이2300mm명시)"
   },
   {
     "name": "드파인광안",
@@ -1212,8 +1212,8 @@
     "addr": "울산 울주 삼남읍",
     "movein": "2026년 6월",
     "households": 344,
-    "ceiling": "2.4m",
-    "source": "조사(주상복합기준)"
+    "ceiling": "2.3m",
+    "source": "PDF확인(지하주차장층고증가만-단위세대2.3m)"
   },
   {
     "name": "문수로푸르지오어반피스",
@@ -1236,8 +1236,8 @@
     "addr": "서울 서대문구 영천동",
     "movein": "2026년 7월",
     "households": 199,
-    "ceiling": "2.4m",
-    "source": "조사(주상복합기준)"
+    "ceiling": "2.3m",
+    "source": "PDF확인(비상한제-층고광고없음+비강남서대문구기준)"
   },
   {
     "name": "동탄신도시금강펜테리움7차센트럴파크",
@@ -1444,8 +1444,8 @@
     "addr": "충북 청주 흥덕구 송절동",
     "movein": "2026년 8월",
     "households": 602,
-    "ceiling": "2.4m",
-    "source": "조사(주상복합기준)"
+    "ceiling": "2.3m",
+    "source": "PDF확인(2300mm명시-층고증가는공용부분)"
   },
   {
     "name": "논산푸르지오더퍼스트",
@@ -1628,8 +1628,8 @@
     "addr": "경기 수원 팔달구 우만동",
     "movein": "2027년 10월",
     "households": 162,
-    "ceiling": "2.4m",
-    "source": "조사(주상복합기준)"
+    "ceiling": "2.3m",
+    "source": "PDF확인(층고증가없음)"
   },
   {
     "name": "리아츠더인천",
@@ -1820,8 +1820,8 @@
     "addr": "서울 강동구 둔촌동",
     "movein": "2027년 12월",
     "households": 128,
-    "ceiling": "2.4m",
-    "source": "조사(주상복합기준)"
+    "ceiling": "2.3m",
+    "source": "PDF확인(비상한제-층고광고없음+비강남강동구기준)"
   },
   {
     "name": "덕계역한신더휴포레스트",
@@ -1948,8 +1948,8 @@
     "addr": "부산 동구 범일동",
     "movein": "2027년 12월",
     "households": 856,
-    "ceiling": "2.4m",
-    "source": "조사(주상복합기준)"
+    "ceiling": "2.3m",
+    "source": "PDF확인(천장고2.3M명시)"
   },
   {
     "name": "송암공원중흥S-클래스SK뷰",
@@ -1988,8 +1988,8 @@
     "addr": "충북 청주 흥덕구 송절동",
     "movein": "2027년 1월",
     "households": 1034,
-    "ceiling": "2.4m",
-    "source": "조사(주상복합기준)"
+    "ceiling": "2.35m",
+    "source": "PDF확인(천장높이2350mm명시)"
   },
   {
     "name": "청주가경아이파크6단지",
@@ -2141,7 +2141,7 @@
     "movein": "2027년 2월",
     "households": 160,
     "ceiling": "2.4m",
-    "source": "조사(주상복합기준)"
+    "source": "PDF확인(거실기준천장고2.4m명시)"
   },
   {
     "name": "힐스테이트문수로센트럴1단지",
@@ -2172,8 +2172,8 @@
     "addr": "서울 마포구 아현동",
     "movein": "2027년 3월",
     "households": 239,
-    "ceiling": "2.4m",
-    "source": "조사(서울마포재개발)"
+    "ceiling": "2.3m",
+    "source": "PDF확인(층고증가없음+푸르지오브랜드)"
   },
   {
     "name": "푸르지오라디우스파크",
@@ -2740,8 +2740,8 @@
     "addr": "충남 천안 서북구 성정동",
     "movein": "2027년 8월",
     "households": 999,
-    "ceiling": "2.4m",
-    "source": "조사(주상복합기준)"
+    "ceiling": "2.3m",
+    "source": "조사(힐스테이트브랜드3개PDF확인-2.3m)"
   },
   {
     "name": "힐스테이트도안리버파크5단지",
