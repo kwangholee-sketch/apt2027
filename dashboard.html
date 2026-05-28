@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>일룸 매출 대시보드</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Noto Sans KR', sans-serif; background: #F8F8F8; color: #333; }
+
+/* LOGIN */
+#login-screen {
+  position: fixed; inset: 0; background: #F8F8F8;
+  display: flex; align-items: center; justify-content: center; z-index: 999;
+}
+.login-box {
+  background: #fff; padding: 48px 40px; width: 360px;
+  border-top: 4px solid #c80a1e; box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+}
+.login-logo { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 28px; color: #c80a1e; margin-bottom: 8px; }
+.login-subtitle { font-size: 13px; color: #999; margin-bottom: 28px; }
+.login-box select, .login-box input[type=password] {
+  width: 100%; padding: 12px 14px; border: 1px solid #E0E0E0;
+  font-family: 'Noto Sans KR', sans-serif; font-size: 14px; color: #333;
+  background: #fff; margin-bottom: 10px; outline: none; appearance: none;
+}
+.login-box select:focus, .login-box input:focus { border-color: #c80a1e; }
+.login-btn {
+  width: 100%; padding: 14px; background: #c80a1e; color: #fff;
+  font-family: 'Noto Sans KR', sans-serif; font-size: 14px; font-weight: 700;
+  border: none; cursor: pointer; margin-top: 4px;
+}
+.login-btn:hover { background: #a00816; }
+.login-error { font-size: 13px; color: #c80a1e; margin-top: 10px; min-height: 18px; }
+
+/* HEADER */
+#dashboard { display: none; }
+.header {
+  background: #fff; border-bottom: 2px solid #c80a1e;
+  padding: 0 40px; display: flex; align-items: center;
+  justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100;
+}
+.logo { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 22px; color: #c80a1e; }
+.store-badge { font-size: 16px; font-weight: 700; color: #333; margin-left: 20px; }
+.office-tag { font-size: 12px; color: #999; background: #F0F0F0; padding: 3px 10px; border-radius: 2px; margin-left: 10px; }
+.period-badge {
+  background: #c80a1e; color: #fff; font-size: 13px; font-weight: 700;
+  padding: 4px 14px; border-radius: 2px; font-family: 'Montserrat', sans-serif;
+}
+.logout-btn {
+  font-size: 12px; color: #999; background: none; border: 1px solid #E0E0E0;
+  padding: 5px 12px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; margin-left: 10px;
+}
+.logout-btn:hover { color: #333; }
+
+/* LAYOUT */
+.container { max-width: 1280px; margin: 0 auto; padding: 28px 24px; }
+.chart-row { display: grid; gap: 16px; margin-bottom: 16px; }
+.row-1 { grid-template-columns: 1fr; }
+.row-2 { grid-template-columns: 1fr 1fr; }
+.card { background: #fff; padding: 24px 28px; }
+.card-title { font-size: 14px; font-weight: 700; color: #333; margin-bottom: 3px; }
+.card-sub { font-size: 12px; color: #999; margin-bottom: 18px; }
+
+/* KPI */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.kpi-card { background: #fff; padding: 22px 24px; border-top: 3px solid #E0E0E0; }
+.kpi-card.primary { border-top-color: #c80a1e; }
+.kpi-label { font-size: 11px; color: #999; letter-spacing: 0.5px; margin-bottom: 10px; text-transform: uppercase; }
+.kpi-value { font-family: 'Montserrat', sans-serif; font-size: 26px; font-weight: 700; color: #333; line-height: 1; }
+.kpi-card.primary .kpi-value { color: #c80a1e; }
+.kpi-unit { font-size: 13px; font-weight: 400; color: #999; margin-left: 3px; }
+.kpi-sub { font-size: 12px; color: #999; margin-top: 6px; }
+
+/* MISC */
+#loading {
+  position: fixed; inset: 0; background: #fff;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 998;
+}
+.spinner {
+  width: 32px; height: 32px; border: 3px solid #E0E0E0; border-top-color: #c80a1e;
+  border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.no-data { font-size: 13px; color: #bbb; padding: 30px 0; text-align: center; }
+
+/* MAIN TABS */
+.main-tab-nav {
+  display: flex; gap: 0; margin-bottom: 20px;
+  border-bottom: 2px solid #E0E0E0;
+}
+.main-tab-btn {
+  padding: 13px 28px; font-size: 14px; font-weight: 700;
+  font-family: 'Noto Sans KR', sans-serif;
+  background: none; border: none; color: #999; cursor: pointer;
+  border-bottom: 3px solid transparent; margin-bottom: -2px;
+}
+.main-tab-btn:hover { color: #555; }
+.main-tab-btn.active { color: #c80a1e; border-bottom-color: #c80a1e; }
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div class="spinner"></div>
+  <p style="color:#999;font-size:14px;">데이터 불러오는 중...</p>
+</div>
+
+<div id="login-screen" style="display:none;">
+  <div class="login-box">
+    <div class="login-logo">iloom</div>
+    <div class="login-subtitle">매장 매출 대시보드</div>
+    <select id="store-select"><option value="">매장을 선택하세요</option></select>
+    <input type="password" id="store-pw" placeholder="비밀번호" onkeydown="if(event.key==='Enter')doLogin()" style="display:none;">
+    <button class="login-btn" onclick="doLogin()">로그인</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<div id="dashboard">
+  <header class="header">
+    <div style="display:flex;align-items:center;">
+      <span class="logo">iloom</span>
+      <span class="store-badge" id="h-store"></span>
+      <span class="office-tag" id="h-office"></span>
+    </div>
+    <div style="display:flex;align-items:center;">
+      <span class="period-badge" id="h-period">-</span>
+      <button class="logout-btn" onclick="doLogout()">로그아웃</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- 1. KPI -->
+    <div class="kpi-grid">
+      <div class="kpi-card primary">
+        <div class="kpi-label">연누계 매출</div>
+        <div class="kpi-value" id="kpi-annual">-<span class="kpi-unit">원</span></div>
+        <div class="kpi-sub" id="kpi-annual-sub"></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label" id="kpi-month-label">최근월 매출</div>
+        <div class="kpi-value" id="kpi-month">-<span class="kpi-unit">원</span></div>
+        <div class="kpi-sub" id="kpi-month-sub"></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">전월 대비</div>
+        <div class="kpi-value" id="kpi-vs">-<span class="kpi-unit">%</span></div>
+        <div class="kpi-sub" id="kpi-vs-sub"></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">사업소 內 순위</div>
+        <div class="kpi-value" id="kpi-rank">-<span class="kpi-unit">위</span></div>
+        <div class="kpi-sub" id="kpi-rank-sub"></div>
+      </div>
+    </div>
+
+    <!-- Main Tab Nav -->
+    <div class="main-tab-nav">
+      <button class="main-tab-btn active" id="mtab-sales" onclick="switchMainTab('sales')">매출실적</button>
+      <button class="main-tab-btn" id="mtab-market" onclick="switchMainTab('market')">시장점유율</button>
+      <button class="main-tab-btn" id="mtab-item" onclick="switchMainTab('item')">품목별 매출현황</button>
+    </div>
+
+    <!-- Tab: 매출실적 -->
+    <div id="tab-sales">
+      <div class="chart-row row-1">
+        <div class="card">
+          <div class="card-title">월별 매출 추이</div>
+          <div class="card-sub">확정납기 기준 (판촉물택배 제외)</div>
+          <div style="height:200px;"><canvas id="chart-trend"></canvas></div>
+        </div>
+      </div>
+      <div class="chart-row row-2">
+        <div class="card">
+          <div class="card-title">사업소 內 매출 순위</div>
+          <div class="card-sub" id="rank-sub">연누계 기준</div>
+          <div id="rank-wrap" style="height:300px;"><canvas id="chart-rank"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-title">납품처 지역별</div>
+          <div class="card-sub">시/도 기준 매출 비중 (TOP 3 + 기타)</div>
+          <div style="height:300px;"><canvas id="chart-region"></canvas></div>
+        </div>
+      </div>
+      <div class="chart-row row-1">
+        <div class="card">
+          <div class="card-title">납품처 동별 매출</div>
+          <div class="card-sub" id="dong-breadcrumb">시/도 선택 → 구/시군 선택 → 동 표시</div>
+          <div id="dong-sido-filter" style="display:flex;flex-wrap:nowrap;overflow-x:auto;gap:4px;margin-bottom:8px;padding-bottom:4px;scrollbar-width:none;"></div>
+          <div style="border-top:1px solid #F0F0F0;margin-bottom:8px;"></div>
+          <div id="dong-sigungu-filter" style="display:flex;flex-wrap:nowrap;overflow-x:auto;gap:4px;margin-bottom:14px;padding-bottom:4px;scrollbar-width:none;"></div>
+          <div id="dong-total" style="margin-bottom:12px;"></div>
+          <div id="dong-chart-wrap" style="height:260px;"><canvas id="chart-dong"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: 시장점유율 -->
+    <div id="tab-market" style="display:none;">
+      <div class="chart-row row-2">
+        <div class="card">
+          <div class="card-title">경쟁사 매출 비중</div>
+          <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
+            <span id="mshare-badge-inner" style="display:inline-flex;align-items:center;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:700;background:#c80a1e;color:#fff;">안쪽 = 해당 상권</span>
+            <span style="display:inline-flex;align-items:center;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:700;background:#444;color:#fff;">바깥쪽 = 전국평균</span>
+          </div>
+          <div id="mshare-sub" style="font-size:11px;color:#bbb;margin-bottom:10px;"></div>
+          <div style="height:260px;"><canvas id="chart-mshare"></canvas></div>
+          <div id="mshare-stats" style="margin-top:16px;"></div>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;">
+          <div class="card-title">경쟁사 매출 비교</div>
+          <div class="card-sub" id="comp-sub">상권 기준 월별 비교</div>
+          <div id="comp-content" style="flex:1;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: 품목별 매출현황 -->
+    <div id="tab-item" style="display:none;">
+      <div class="card" style="text-align:center;padding:80px 0;">
+        <div style="font-size:32px;color:#E0E0E0;margin-bottom:16px;">📊</div>
+        <div style="font-size:14px;color:#bbb;">품목별 매출 데이터 연동 준비 중입니다.</div>
+        <div style="font-size:12px;color:#ccc;margin-top:8px;">자료 추가 후 업데이트 예정</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ============================================================
+// 매장 비밀번호 설정 — pw 값을 원하는 코드로 변경 가능
+// ============================================================
+const STORES = {
+  // 서울사업소
+  '논현4':        { pw:'61LM03', office:'서울사업소' },
+  '마포2':        { pw:'61LM04', office:'서울사업소' },
+  '송파4':        { pw:'61LM94', office:'서울사업소' },
+  '용산2':        { pw:'51LM07', office:'서울사업소' },
+  '노원':         { pw:'61LM97', office:'서울사업소' },
+  '강동아이파크': { pw:'62LM43', office:'서울사업소' },
+  '롯데청량리':   { pw:'62LM15', office:'서울사업소' },
+  '롯데미아':     { pw:'62LM34', office:'서울사업소' },
+  '롯데영등포':   { pw:'62LM26', office:'서울사업소' },
+  '현대목동':     { pw:'IL0027', office:'서울사업소' },
+  // 경기사업소
+  '수원광교3':          { pw:'61LM93', office:'경기사업소' },
+  '분당서현':           { pw:'61LM18', office:'경기사업소' },
+  '스타필드고양':       { pw:'173075', office:'경기사업소' },
+  '신세계파주2':        { pw:'62LM01', office:'경기사업소' },
+  '일산킨텍스':         { pw:'62LM08', office:'경기사업소' },
+  '롯데광명2':          { pw:'IL0024', office:'경기사업소' },
+  '안산상록수2':        { pw:'61LM25', office:'경기사업소' },
+  '안양':               { pw:'62LM04', office:'경기사업소' },
+  '기흥5':              { pw:'IL0022', office:'경기사업소' },
+  '롯데동탄2':          { pw:'215500', office:'경기사업소' },
+  '롯데평촌':           { pw:'62LM17', office:'경기사업소' },
+  '분당2':              { pw:'61LM17', office:'경기사업소' },
+  '평택5':              { pw:'IL0015', office:'경기사업소' },
+  '스타필드수원(6층)':  { pw:'237664', office:'경기사업소' },
+  '스타필드수원키즈(3층)': { pw:'237665', office:'경기사업소' },
+  '롯데수지':           { pw:'IL0019', office:'경기사업소' },
+  '롯데안산(팝업)':     { pw:'62LM30', office:'경기사업소' },
+  '송도5':              { pw:'IL0000', office:'경기사업소' },
+  '인천검단':           { pw:'62LM12', office:'경기사업소' },
+  '인천중앙2':          { pw:'61LM29', office:'경기사업소' },
+  '김포5':              { pw:'61LM11', office:'경기사업소' },
+  '부천3':              { pw:'61LM16', office:'경기사업소' },
+  '의정부8':            { pw:'61LM28', office:'경기사업소' },
+  '신세계시흥2':        { pw:'62LM40', office:'경기사업소' },
+  '롯데구리':           { pw:'62LM47', office:'경기사업소' },
+  '롯데인천2':          { pw:'237563', office:'경기사업소' },
+  // 대전사업소
+  '대전둔산5':    { pw:'61LM49', office:'대전사업소' },
+  '서대전3':      { pw:'61LM51', office:'대전사업소' },
+  '서산4':        { pw:'62LM60', office:'대전사업소' },
+  '세종2':        { pw:'61LM53', office:'대전사업소' },
+  '천안신방3':    { pw:'61LM55', office:'대전사업소' },
+  '청남3':        { pw:'61LM56', office:'대전사업소' },
+  '청주6':        { pw:'61LM57', office:'대전사업소' },
+  '청주중앙4':    { pw:'61LM58', office:'대전사업소' },
+  '신세계대전(팝업)': { pw:'62LM14', office:'대전사업소' },
+  'NC대전유성':   { pw:'IL0003', office:'대전사업소' },
+  // 광주사업소
+  '광천5':  { pw:'61LM15', office:'광주사업소' },
+  '덕진2':  { pw:'61LM60', office:'광주사업소' },
+  '봉선5':  { pw:'61LM62', office:'광주사업소' },
+  '빛고을3':{ pw:'61LM63', office:'광주사업소' },
+  '순천4':  { pw:'61LM64', office:'광주사업소' },
+  '전군2':  { pw:'61LM65', office:'광주사업소' },
+  '중화산4':{ pw:'61LM67', office:'광주사업소' },
+  '제주5':  { pw:'238019', office:'광주사업소' },
+  // 대구사업소
+  '대구3':    { pw:'61LM73', office:'대구사업소' },
+  '경주4':    { pw:'61LM70', office:'대구사업소' },
+  '구미5':    { pw:'61LM71', office:'대구사업소' },
+  '달서5':    { pw:'61LM07', office:'대구사업소' },
+  '수성5':    { pw:'61LM75', office:'대구사업소' },
+  '안동5':    { pw:'61LM76', office:'대구사업소' },
+  '포항중앙2':{ pw:'61LM81', office:'대구사업소' },
+  '원주3':    { pw:'61LM77', office:'대구사업소' },
+  '춘천3':    { pw:'61LM79', office:'대구사업소' },
+  // 부산사업소
+  '부산센텀4':    { pw:'61LM95', office:'부산사업소' },
+  '거제4':        { pw:'62LM39', office:'부산사업소' },
+  '김해2':        { pw:'61LM37', office:'부산사업소' },
+  '롯데동부산2':  { pw:'61LM88', office:'부산사업소' },
+  '마산6':        { pw:'61LM39', office:'부산사업소' },
+  '양산3':        { pw:'61LM41', office:'부산사업소' },
+  '연제4':        { pw:'61LM42', office:'부산사업소' },
+  '진주2':        { pw:'61LM45', office:'부산사업소' },
+  '창원3':        { pw:'61LM46', office:'부산사업소' },
+  '하단3':        { pw:'61LM47', office:'부산사업소' },
+  '롯데광복2':    { pw:'62LM25', office:'부산사업소' },
+  '롯데울산(팝업)':{ pw:'IL0029', office:'부산사업소' },
+  '울산5':        { pw:'IL0013', office:'부산사업소' },
+};
+
+const ERP_ID   = '1FrCJW4PM7WTTEh_RwEUq1TGhg1IHXlkBQumXNUr2wQ0';
+const COMP_ID  = '1LtJeYTPeALz4iAxJmXzQKJ7zZpvpIzXJoTj8NH3237Q';
+const COMP_GID = '1153774759';
+const RED = '#c80a1e';
+const COMP_COLORS = { '한샘':'#2563eb', '리바트':'#16a34a', '까사미아':'#d97706', '에몬스':'#7c3aed' };
+const OFFICE_ORDER = ['서울사업소','경기사업소','대전사업소','광주사업소','대구사업소','부산사업소'];
+
+// datalabels 전역 비활성화 - 경쟁사 도넛에서만 개별 활성화
+Chart.defaults.set('plugins.datalabels', { display: false });
+
+let allRows = [];
+let compData = {};
+let charts = {};
+let currentStore = '';
+
+// ===== UTILS =====
+function fmt(n) {
+  if (n >= 100000000) return (n/100000000).toFixed(1)+'억';
+  if (n >= 10000) return Math.round(n/10000).toLocaleString()+'만';
+  return n.toLocaleString();
+}
+
+function parseCSVLine(line) {
+  const r=[]; let cur='', inQ=false;
+  for(let i=0;i<line.length;i++){
+    const c=line[i];
+    if(c==='"') inQ=!inQ;
+    else if(c===','&&!inQ){r.push(cur);cur='';}
+    else cur+=c;
+  }
+  r.push(cur); return r;
+}
+
+const SIDO_ALIAS = {
+  '경기도':'경기', '강원특별자치도':'강원', '강원도':'강원',
+  '충청북도':'충북', '충청남도':'충남',
+  '전북특별자치도':'전북', '전라북도':'전북', '전라남도':'전남',
+  '경상북도':'경북', '경상남도':'경남',
+  '제주특별자치도':'제주',
+  '서울특별시':'서울', '부산광역시':'부산', '대구광역시':'대구',
+  '인천광역시':'인천', '광주광역시':'광주', '대전광역시':'대전',
+  '울산광역시':'울산', '세종특별자치시':'세종',
+};
+function parseSido(addr) {
+  if(!addr) return '';
+  const p = addr.trim().split(/\s+/)[0];
+  if(!p) return '';
+  return SIDO_ALIAS[p] || p.replace(/(특별자치도|특별자치시|특별시|광역시|광역자치시|도)$/,'') || p;
+}
+
+function parseDong(addr) {
+  if(!addr) return '';
+  const parts = addr.trim().split(/\s+/);
+  for(let i=parts.length-1;i>=0;i--){
+    if(/[동읍면리가]$/.test(parts[i])) return parts[i];
+  }
+  return '';
+}
+
+function parseSigungu(addr) {
+  if(!addr) return '';
+  const parts = addr.trim().split(/\s+/);
+  if(parts.length < 2) return '';
+  const p0 = parts[0];
+  if(p0.match(/(특별시|광역시|광역자치시|특별자치시)$/)) {
+    return parts[1] || '';
+  }
+  if(p0.match(/도$/)) {
+    const p1 = parts[1] || '';
+    if(p1.match(/시$/) && parts[2] && parts[2].match(/[구군]$/)) return parts[2];
+    return p1;
+  }
+  return parts[1] || '';
+}
+
+function destroyChart(id){ if(charts[id]){charts[id].destroy();delete charts[id];} }
+
+// ===== PARSE ERP =====
+function parseERP(text) {
+  const lines = text.trim().split('\n');
+  const h = parseCSVLine(lines[0]);
+  const idx = {
+    store:   h.indexOf('실적대리점'),
+    amount:  h.indexOf('수주건별금액'),
+    type:    h.indexOf('수주특성'),
+    date:    h.indexOf('확정납기'),
+    office:  h.indexOf('실적사업소'),
+    address: h.indexOf('납품처주소'),
+  };
+  const rows=[];
+  for(let i=1;i<lines.length;i++){
+    const c=parseCSVLine(lines[i]);
+    if(c.length<10) continue;
+    const get=k=>(c[idx[k]]||'').replace(/"/g,'').trim();
+    const amt=parseInt(get('amount').replace(/[,\s]/g,''))||0;
+    rows.push({ store:get('store'), amt, type:get('type'), date:get('date'), office:get('office'), address:get('address') });
+  }
+  return rows;
+}
+
+// ===== PARSE COMPETITOR =====
+function parseCompetitor(text) {
+  const lines = text.trim().split('\n');
+  // col offsets: iloom monthStart=7, 한샘 name=22 months=25, 리바트 name=40 months=43, 까사미아 name=58 months=61, 에몬스 name=76 months=79
+  const BRANDS = { '한샘':{n:22,m:25}, '리바트':{n:40,m:43}, '까사미아':{n:58,m:61}, '에몬스':{n:76,m:79} };
+  const result={};
+  for(let i=1;i<lines.length;i++){
+    const c=parseCSVLine(lines[i]);
+    if(c.length<5) continue;
+    const iloom=(c[3]||'').replace(/"/g,'').trim();
+    if(!iloom) continue;
+    const entry={ 상권:(c[1]||'').replace(/"/g,'').trim(), 행정구역:(c[2]||'').replace(/"/g,'').trim(), iloomMonths:[], brands:{} };
+    for(let m=0;m<12;m++){
+      entry.iloomMonths.push(parseInt((c[7+m]||'').replace(/[",\s]/g,''))||0);
+    }
+    for(const [brand,cfg] of Object.entries(BRANDS)){
+      const name=(c[cfg.n]||'').replace(/"/g,'').trim();
+      const months=[];
+      for(let m=0;m<12;m++) months.push(parseInt((c[cfg.m+m]||'').replace(/[",\s]/g,''))||0);
+      if(name||months.some(v=>v>0)) entry.brands[brand]={name,months};
+    }
+    if(!result[iloom]) result[iloom]=[];
+    result[iloom].push(entry);
+  }
+  return result;
+}
+
+// ===== LOGIN =====
+function populateStores() {
+  const sel=document.getElementById('store-select');
+  const byOffice={};
+  for(const [name,info] of Object.entries(STORES)){
+    if(!byOffice[info.office]) byOffice[info.office]=[];
+    byOffice[info.office].push(name);
+  }
+  for(const office of OFFICE_ORDER){
+    if(!byOffice[office]) continue;
+    const grp=document.createElement('optgroup');
+    grp.label=office;
+    byOffice[office].forEach(name=>{
+      const opt=document.createElement('option');
+      opt.value=name; opt.textContent=name;
+      grp.appendChild(opt);
+    });
+    sel.appendChild(grp);
+  }
+}
+
+function doLogin(){
+  const store=document.getElementById('store-select').value;
+  const pw=document.getElementById('store-pw').value;
+  const err=document.getElementById('login-error');
+  if(!store){err.textContent='매장을 선택하세요.';return;}
+  // if(!STORES[store]||pw!==STORES[store].pw){err.textContent='비밀번호가 올바르지 않습니다.';return;}
+  err.textContent='';
+  currentStore=store;
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('dashboard').style.display='block';
+  renderDashboard();
+}
+
+function doLogout(){
+  currentStore=''; dongTree={}; currentDongSido=''; currentDongSigungu='';
+  document.getElementById('dashboard').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('store-pw').value='';
+  Object.keys(charts).forEach(id=>destroyChart(id));
+}
+
+// ===== RENDER =====
+function renderDashboard(){
+  const office=STORES[currentStore].office;
+  document.getElementById('h-store').textContent=currentStore;
+  document.getElementById('h-office').textContent=office;
+  switchMainTab('sales');
+
+  const sales=allRows.filter(r=>r.store===currentStore&&r.type!=='(판촉물택배)'&&r.amt>0);
+  const officeSales=allRows.filter(r=>r.office===office&&r.type!=='(판촉물택배)'&&r.amt>0&&r.store);
+
+  const monthSet=new Set(allRows.map(r=>r.date.slice(0,7)).filter(m=>/^\d{4}-\d{2}$/.test(m)));
+  const months=[...monthSet].sort();
+  const latest=months[months.length-1];
+  const prev=months[months.length-2];
+
+  if(months.length){
+    const [y,m1]=months[0].split('-');
+    const [,m2]=latest.split('-');
+    document.getElementById('h-period').textContent=
+      months.length===1?`${y}년 ${+m1}월 납기 기준`:`${y}년 ${+m1}~${+m2}월 납기 기준`;
+  }
+
+  renderKPI(sales, officeSales, latest, prev, months, office);
+  renderTrend(sales, months);
+  renderRank(officeSales, office);
+  renderRegion(sales);
+  renderDong(sales);
+}
+
+function renderKPI(sales, officeSales, latest, prev, months, office){
+  const annual=sales.reduce((s,r)=>s+r.amt,0);
+  const mAmt=sales.filter(r=>r.date.startsWith(latest)).reduce((s,r)=>s+r.amt,0);
+  const pAmt=prev?sales.filter(r=>r.date.startsWith(prev)).reduce((s,r)=>s+r.amt,0):0;
+
+  const byStore={};
+  officeSales.forEach(r=>{byStore[r.store]=(byStore[r.store]||0)+r.amt;});
+  const sorted=Object.entries(byStore).sort((a,b)=>b[1]-a[1]);
+  const rank=sorted.findIndex(([s])=>s===currentStore)+1;
+
+  document.getElementById('kpi-annual').innerHTML=fmt(annual)+'<span class="kpi-unit">원</span>';
+  document.getElementById('kpi-annual-sub').textContent=`${months.length}개월 누계`;
+
+  const [,m]=latest.split('-');
+  document.getElementById('kpi-month-label').textContent=`${+m}월 매출`;
+  document.getElementById('kpi-month').innerHTML=fmt(mAmt)+'<span class="kpi-unit">원</span>';
+  document.getElementById('kpi-month-sub').textContent=prev?`전월 ${fmt(pAmt)}원`:'';
+
+  const vsEl=document.getElementById('kpi-vs');
+  if(pAmt){
+    const rate=((mAmt-pAmt)/pAmt*100);
+    vsEl.innerHTML=(rate>=0?'+':'')+rate.toFixed(1)+'<span class="kpi-unit">%</span>';
+    vsEl.style.color=rate>=0?'#16a34a':RED;
+  } else { vsEl.innerHTML='-'; }
+  document.getElementById('kpi-vs-sub').textContent=prev?'전월 대비':'';
+
+  document.getElementById('kpi-rank').innerHTML=rank+'<span class="kpi-unit">위</span>';
+  document.getElementById('kpi-rank-sub').textContent=`${office} ${sorted.length}개 매장 중`;
+}
+
+function renderTrend(sales, months){
+  const data=months.map(m=>sales.filter(r=>r.date.startsWith(m)).reduce((s,r)=>s+r.amt,0));
+  const labels=months.map(m=>+m.split('-')[1]+'월');
+  destroyChart('trend');
+  charts['trend']=new Chart(document.getElementById('chart-trend'),{
+    type:'bar',
+    data:{ labels, datasets:[{ data, backgroundColor:months.map((_,i)=>i===months.length-1?RED:'#F0C0C5'), borderRadius:3 }] },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>' '+fmt(ctx.raw)+'원'}} },
+      scales:{ x:{grid:{display:false},ticks:{font:{family:'Noto Sans KR',size:12}}}, y:{grid:{color:'#F0F0F0'},ticks:{callback:v=>fmt(v),font:{size:11}}} }
+    }
+  });
+}
+
+function renderRank(officeSales, office){
+  const byStore={};
+  officeSales.forEach(r=>{byStore[r.store]=(byStore[r.store]||0)+r.amt;});
+  const sorted=Object.entries(byStore).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('rank-sub').textContent=`${office} 연누계 기준 (${sorted.length}개 매장)`;
+  const h=Math.max(280, sorted.length*24);
+  document.getElementById('rank-wrap').style.height=h+'px';
+  destroyChart('rank');
+  charts['rank']=new Chart(document.getElementById('chart-rank'),{
+    type:'bar',
+    data:{
+      labels:sorted.map(([s],i)=>s===currentStore?s:`${i+1}위`),
+      datasets:[{ data:sorted.map(([,v])=>v), backgroundColor:sorted.map(([s])=>s===currentStore?RED:'#E8E8E8'), borderRadius:2 }]
+    },
+    options:{
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>' '+fmt(ctx.raw)+'원'}} },
+      scales:{ x:{grid:{color:'#F0F0F0'},ticks:{callback:v=>fmt(v),font:{size:10}}}, y:{grid:{display:false},ticks:{font:{family:'Noto Sans KR',size:11}}} }
+    }
+  });
+}
+
+function makeDonut(canvasId, entries, topN) {
+  const sorted = Object.entries(entries).sort((a,b)=>b[1]-a[1]);
+  const top = sorted.slice(0, topN);
+  const etcAmt = sorted.slice(topN).reduce((s,[,v])=>s+v, 0);
+  const labels = top.map(([k])=>k);
+  const data   = top.map(([,v])=>v);
+  if(etcAmt > 0){ labels.push('기타'); data.push(etcAmt); }
+  const total  = data.reduce((s,v)=>s+v, 0);
+  const PALETTE = [RED,'#e8526a','#f09aa8','#f5c0c8','#f8d8dc','#E0E0E0','#ccc','#bbb'];
+  const bg = data.map((_,i)=> i===labels.length-1&&etcAmt>0 ? '#E0E0E0' : PALETTE[i]||'#ccc');
+  return new Chart(document.getElementById(canvasId), {
+    type:'doughnut',
+    data:{ labels, datasets:[{ data, backgroundColor:bg, borderWidth:0 }] },
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:'62%',
+      plugins:{
+        legend:{ position:'bottom', labels:{font:{family:'Noto Sans KR',size:11}, padding:10} },
+        tooltip:{ callbacks:{ label:ctx=>' '+ctx.label+': '+fmt(ctx.raw)+'원 ('+Math.round(ctx.raw/total*100)+'%)' } }
+      }
+    }
+  });
+}
+
+function renderRegion(sales){
+  const map={};
+  sales.forEach(r=>{ const s=parseSido(r.address); if(s) map[s]=(map[s]||0)+r.amt; });
+  destroyChart('region');
+  if(!Object.keys(map).length){
+    document.getElementById('chart-region').parentElement.innerHTML='<div class="no-data">납품처 주소 정보가 없습니다.</div>';
+    return;
+  }
+  charts['region'] = makeDonut('chart-region', map, 3);
+}
+
+// 구조: { sido: { sigungu: { dong: amount } } }
+let dongTree = {};
+let currentDongSido = '';
+let currentDongSigungu = '';
+
+function renderDong(sales) {
+  dongTree = {};
+  sales.forEach(r => {
+    const sido    = parseSido(r.address);
+    const sigungu = parseSigungu(r.address);
+    const dong    = parseDong(r.address);
+    if(!sido || !sigungu || !dong) return;
+    if(!dongTree[sido]) dongTree[sido] = {};
+    if(!dongTree[sido][sigungu]) dongTree[sido][sigungu] = {};
+    dongTree[sido][sigungu][dong] = (dongTree[sido][sigungu][dong]||0) + r.amt;
+  });
+
+  const sidos = Object.keys(dongTree);
+  if(!sidos.length) {
+    document.getElementById('dong-sido-filter').innerHTML = '';
+    document.getElementById('dong-sigungu-filter').innerHTML = '';
+    document.getElementById('dong-chart-wrap').innerHTML = '<div class="no-data">납품처 주소 정보가 없습니다.</div>';
+    return;
+  }
+  const sidoSorted = sidos.map(s => [s, sidoTotal(s)]).sort((a,b)=>b[1]-a[1]).map(([s])=>s);
+  if(!currentDongSido || !dongTree[currentDongSido]) currentDongSido = sidoSorted[0];
+
+  const sigunguSorted = sigunguList(currentDongSido);
+  if(!currentDongSigungu || !dongTree[currentDongSido]?.[currentDongSigungu]) currentDongSigungu = sigunguSorted[0];
+
+  buildSidoFilter(sidoSorted);
+  buildSigunguFilter(sigunguSorted);
+  renderDongChart();
+}
+
+function sidoTotal(sido) {
+  return Object.values(dongTree[sido]||{}).flatMap(m=>Object.values(m)).reduce((a,b)=>a+b,0);
+}
+
+function sigunguList(sido) {
+  const map = dongTree[sido] || {};
+  return Object.entries(map).map(([s,dm])=>[s, Object.values(dm).reduce((a,b)=>a+b,0)]).sort((a,b)=>b[1]-a[1]).map(([s])=>s);
+}
+
+function tabBtn(label, active, onclick) {
+  return `<button onclick="${onclick}" style="padding:4px 12px;font-size:12px;font-family:'Noto Sans KR',sans-serif;border:1px solid ${active?'#c80a1e':'#E0E0E0'};background:${active?'#c80a1e':'#fff'};color:${active?'#fff':'#666'};cursor:pointer;white-space:nowrap;flex-shrink:0;">${label}</button>`;
+}
+
+function buildSidoFilter(sidos) {
+  document.getElementById('dong-sido-filter').innerHTML = sidos.map(s => tabBtn(s, s===currentDongSido, `selectDongSido('${s}')`)).join('');
+}
+
+function buildSigunguFilter(sigungus) {
+  document.getElementById('dong-sigungu-filter').innerHTML = sigungus.map(s => tabBtn(s, s===currentDongSigungu, `selectDongSigungu('${s}')`)).join('');
+  document.getElementById('dong-breadcrumb').textContent = `${currentDongSido} › ${currentDongSigungu}`;
+}
+
+function selectDongSido(sido) {
+  currentDongSido = sido;
+  const list = sigunguList(sido);
+  currentDongSigungu = list[0] || '';
+  buildSidoFilter(Object.keys(dongTree).map(s=>[s,sidoTotal(s)]).sort((a,b)=>b[1]-a[1]).map(([s])=>s));
+  buildSigunguFilter(list);
+  renderDongChart();
+}
+
+function selectDongSigungu(sigungu) {
+  currentDongSigungu = sigungu;
+  buildSigunguFilter(sigunguList(currentDongSido));
+  renderDongChart();
+}
+
+function renderDongChart() {
+  const dongMap = dongTree[currentDongSido]?.[currentDongSigungu] || {};
+  const sorted = Object.entries(dongMap).sort((a,b)=>b[1]-a[1]);
+  const wrap = document.getElementById('dong-chart-wrap');
+  const totalEl = document.getElementById('dong-total');
+
+  if(!sorted.length) {
+    totalEl.innerHTML = '';
+    wrap.innerHTML = '<div class="no-data">데이터가 없습니다.</div>';
+    return;
+  }
+
+  const total = sorted.reduce((s,[,v])=>s+v, 0);
+
+  // 구 전체 매출 상단 표시
+  totalEl.innerHTML = `
+    <span style="font-size:12px;color:#999;">${currentDongSigungu} 전체 매출</span>
+    <span style="font-family:'Montserrat',sans-serif;font-size:20px;font-weight:700;color:#c80a1e;margin-left:12px;">${fmt(total)}원</span>`;
+
+  const h = Math.max(200, sorted.length * 26);
+  wrap.style.height = h + 'px';
+  if(!document.getElementById('chart-dong')) wrap.innerHTML = '<canvas id="chart-dong"></canvas>';
+  destroyChart('dong');
+  charts['dong'] = new Chart(document.getElementById('chart-dong'), {
+    type: 'bar',
+    data: {
+      labels: sorted.map(([k])=>k),
+      datasets: [{ data: sorted.map(([,v])=>v), backgroundColor: sorted.map(([,v])=>{
+          const ratio = v / sorted[0][1];
+          const r = Math.round(200 + (232-200)*(1-ratio));
+          const g = Math.round(10  + (232-10) *(1-ratio));
+          const b = Math.round(30  + (232-30) *(1-ratio));
+          return `rgb(${r},${g},${b})`;
+        }), borderRadius:2 }]
+    },
+    options: {
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{
+          label: ctx => {
+            const pct = (ctx.raw / total * 100).toFixed(1);
+            return `  ${fmt(ctx.raw)}원 (구 내 비중 ${pct}%)`;
+          }
+        }}
+      },
+      scales:{ x:{grid:{color:'#F0F0F0'},ticks:{callback:v=>fmt(v),font:{size:10}}}, y:{grid:{display:false},ticks:{font:{family:'Noto Sans KR',size:11}}} }
+    }
+  });
+}
+
+function renderComp(storeName, months){
+  const content=document.getElementById('comp-content');
+  const entries=compData[storeName];
+  if(!entries||!entries.length){
+    content.innerHTML='<div class="no-data">경쟁사 비교 데이터가 없습니다.</div>';
+    return;
+  }
+  const entry=entries[0];
+  document.getElementById('comp-sub').textContent=`${entry.행정구역} (${entry.상권}) 기준`;
+
+  // month indices (0=Jan)
+  const mIdx=months.map(m=>+m.split('-')[1]-1);
+  const labels=months.map(m=>+m.split('-')[1]+'월');
+
+  // iloom: use ERP data for own store
+  const erpByMonth=months.map(m=>allRows.filter(r=>r.store===storeName&&r.type!=='(판촉물택배)'&&r.amt>0&&r.date.startsWith(m)).reduce((s,r)=>s+r.amt,0));
+  const datasets=[{ label:'일룸', data:erpByMonth, backgroundColor:RED, borderRadius:3 }];
+
+  for(const [brand,cfg] of Object.entries(COMP_COLORS)){
+    if(!entry.brands[brand]) continue;
+    const bdata=mIdx.map(i=>entry.brands[brand].months[i]||0);
+    if(!bdata.some(v=>v>0)) continue;
+    const label=entry.brands[brand].name?`${brand} (${entry.brands[brand].name})`:brand;
+    datasets.push({ label, data:bdata, backgroundColor:cfg, borderRadius:3 });
+  }
+
+  if(datasets.length<=1&&!erpByMonth.some(v=>v>0)){
+    content.innerHTML='<div class="no-data">경쟁사 매출 데이터가 없습니다.</div>';
+    return;
+  }
+
+  content.innerHTML='<div style="height:260px;"><canvas id="chart-comp"></canvas></div>';
+  if(entries.length>1) content.innerHTML+=`<p style="font-size:12px;color:#bbb;margin-top:8px;">* ${entries.length}개 상권 중 1개 표시</p>`;
+
+  destroyChart('comp');
+  charts['comp']=new Chart(document.getElementById('chart-comp'),{
+    type:'bar',
+    data:{ labels, datasets },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{ position:'bottom', labels:{font:{family:'Noto Sans KR',size:11},padding:12} },
+        tooltip:{ callbacks:{ label:ctx=>' '+ctx.dataset.label+': '+fmt(ctx.raw)+'원' } }
+      },
+      scales:{ x:{grid:{display:false},ticks:{font:{family:'Noto Sans KR',size:12}}}, y:{grid:{color:'#F0F0F0'},ticks:{callback:v=>fmt(v),font:{size:11}}} }
+    }
+  });
+}
+
+// ===== MAIN TAB =====
+function switchMainTab(tab) {
+  ['sales','market','item'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t===tab ? '' : 'none';
+    document.getElementById('mtab-'+t).classList.toggle('active', t===tab);
+  });
+  if(tab==='market') {
+    const months=[...new Set(allRows.map(r=>r.date.slice(0,7)).filter(m=>/^\d{4}-\d{2}$/.test(m)))].sort();
+    renderMarketShare();
+    renderComp(currentStore, months);
+  }
+}
+
+function renderMarketShare() {
+  const entries = compData[currentStore];
+  const months = [...new Set(allRows.map(r=>r.date.slice(0,7)).filter(m=>/^\d{4}-\d{2}$/.test(m)))].sort();
+  const mIdx = months.map(m => +m.split('-')[1]-1);
+
+  if (!entries || !entries.length) {
+    document.getElementById('chart-mshare').parentElement.innerHTML = '<div class="no-data">경쟁사 비교 데이터가 없습니다.</div>';
+    return;
+  }
+  const entry = entries[0];
+
+  // 배지 & 서브 레이블 업데이트
+  const areaName = entry.상권 || entry.행정구역 || '';
+  const badge = document.getElementById('mshare-badge-inner');
+  if(badge) badge.textContent = `안쪽 = ${areaName}`;
+  const subEl = document.getElementById('mshare-sub');
+  if(subEl) subEl.textContent = `${entry.행정구역} (${entry.상권}) 기준 연누계`;
+
+  // ── 안쪽 링: 해당 상권 (일룸=ERP, 경쟁사=시트)
+  const iloomAmt = allRows.filter(r=>r.store===currentStore&&r.type!=='(판촉물택배)'&&r.amt>0).reduce((s,r)=>s+r.amt,0);
+  const shareLabels = ['일룸'];
+  const innerData   = [iloomAmt];
+  const shareBg     = [RED];
+
+  for (const [brand] of Object.entries(COMP_COLORS)) {
+    if (!entry.brands[brand]) continue;
+    const amt = mIdx.reduce((s,i) => s + (entry.brands[brand].months[i]||0), 0);
+    if (amt > 0) {
+      shareLabels.push(brand);
+      innerData.push(amt);
+      shareBg.push(COMP_COLORS[brand]);
+    }
+  }
+
+  // ── 바깥 링: 전국 합산 (상권 중복 제거)
+  const seen = new Set();
+  const natMap = {};
+  shareLabels.forEach(l => natMap[l] = 0);
+  for (const storeEntries of Object.values(compData)) {
+    for (const e of storeEntries) {
+      const key = `${e.상권}||${e.행정구역}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      for (const i of mIdx) natMap['일룸'] += (e.iloomMonths[i]||0);
+      for (const brand of shareLabels.slice(1)) {
+        if (e.brands[brand]) for (const i of mIdx) natMap[brand] += (e.brands[brand].months[i]||0);
+      }
+    }
+  }
+  const outerData  = shareLabels.map(l => natMap[l]||0);
+  const innerTotal = innerData.reduce((s,v)=>s+v, 0);
+  const outerTotal = outerData.reduce((s,v)=>s+v, 0);
+
+  // 바깥(전국) 링은 같은 색 계열에서 약간 밝게
+  const outerBg = shareBg.map(c => c + 'AA');
+
+  // 중앙 텍스트 플러그인
+  const centerTextPlugin = {
+    id: 'mshareCenter',
+    afterDraw(chart) {
+      const { ctx, chartArea } = chart;
+      const cx = chartArea.left + chartArea.width / 2;
+      const cy = chartArea.top  + chartArea.height / 2;
+      ctx.save();
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = "bold 13px 'Noto Sans KR', sans-serif";
+      ctx.fillStyle = '#555';
+      ctx.fillText(areaName, cx, cy);
+      ctx.restore();
+    }
+  };
+
+  destroyChart('mshare');
+  charts['mshare'] = new Chart(document.getElementById('chart-mshare'), {
+    type: 'doughnut',
+    data: {
+      labels: shareLabels,
+      datasets: [
+        { label:'전국평균',  data: outerData, backgroundColor: outerBg,  borderWidth: 3, borderColor: '#fff' },
+        { label:'해당 상권', data: innerData, backgroundColor: shareBg,  borderWidth: 3, borderColor: '#fff' }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '40%',
+      plugins: {
+        legend: { display: false },
+        datalabels: {
+          display: ctx => {
+            const total = ctx.dataset.data.reduce((a,b)=>a+b, 0);
+            return total > 0 && (ctx.dataset.data[ctx.dataIndex] / total) >= 0.05;
+          },
+          formatter: (value, ctx) => {
+            const total = ctx.dataset.data.reduce((a,b)=>a+b, 0);
+            return Math.round(value / total * 100) + '%';
+          },
+          color: '#fff',
+          font: { weight: 'bold', size: 11, family: 'Montserrat' },
+          textShadowColor: 'rgba(0,0,0,0.25)',
+          textShadowBlur: 3,
+        },
+        tooltip: {
+          callbacks: {
+            title: ctx => `${ctx[0].dataset.label} — ${ctx[0].label}`,
+            label: ctx => {
+              const total = ctx.dataset.data.reduce((a,b)=>a+b, 0);
+              return `  ${fmt(ctx.raw)}원 (${Math.round(ctx.raw/total*100)}%)`;
+            }
+          }
+        }
+      }
+    },
+    plugins: [centerTextPlugin]
+  });
+
+  // ── 통계 테이블
+  const statsEl = document.getElementById('mshare-stats');
+  if(!statsEl) return;
+
+  const header = `
+    <tr style="border-bottom:2px solid #E8E8E8;">
+      <th style="text-align:left;padding:7px 0;font-size:11px;color:#999;font-weight:600;letter-spacing:0.3px;">브랜드</th>
+      <th style="text-align:right;padding:7px 8px;font-size:11px;color:#999;font-weight:600;letter-spacing:0.3px;">전국평균</th>
+      <th style="text-align:right;padding:7px 0;font-size:11px;color:#c80a1e;font-weight:600;letter-spacing:0.3px;">해당 상권</th>
+    </tr>`;
+
+  const dataRows = shareLabels.map((label, i) => {
+    const iAmt = innerData[i], oAmt = outerData[i];
+    const iPct = outerTotal > 0 ? (oAmt/outerTotal*100).toFixed(1) : '0.0';
+    const oPct = innerTotal > 0 ? (iAmt/innerTotal*100).toFixed(1) : '0.0';
+    const isIloom = label === '일룸';
+    const diff = parseFloat(oPct) - parseFloat(iPct);
+    const arrow = diff === 0 ? '' : `<span style="font-size:10px;color:${diff>0?'#16a34a':RED};margin-left:4px;">${diff>0?'▲':'▼'}${Math.abs(diff).toFixed(1)}%p</span>`;
+    return `<tr style="border-bottom:1px solid #F4F4F4;">
+      <td style="padding:7px 0;">
+        <div style="display:flex;align-items:center;gap:7px;">
+          <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${shareBg[i]};flex-shrink:0;"></span>
+          <span style="font-size:13px;font-weight:${isIloom?700:400};color:${isIloom?'#222':'#555'};">${label}</span>
+        </div>
+      </td>
+      <td style="padding:7px 8px;font-family:'Montserrat',sans-serif;font-size:13px;color:#aaa;text-align:right;">${iPct}%</td>
+      <td style="padding:7px 0;text-align:right;">
+        <span style="font-family:'Montserrat',sans-serif;font-size:13px;font-weight:${isIloom?700:500};color:${isIloom?RED:'#444'};">${oPct}%</span>${arrow}
+      </td>
+    </tr>`;
+  }).join('');
+
+  statsEl.innerHTML = `<table style="width:100%;border-collapse:collapse;">${header}${dataRows}</table>`;
+}
+
+// ===== LOAD =====
+populateStores();
+
+Promise.all([
+  fetch(`https://docs.google.com/spreadsheets/d/${ERP_ID}/export?format=csv`).then(r=>r.text()),
+  fetch(`https://docs.google.com/spreadsheets/d/${COMP_ID}/export?format=csv&gid=${COMP_GID}`).then(r=>r.ok?r.text():Promise.resolve('')),
+]).then(([erpText, compText])=>{
+  allRows=parseERP(erpText);
+  if(compText) compData=parseCompetitor(compText);
+  document.getElementById('loading').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+}).catch(err=>{
+  document.getElementById('loading').innerHTML=`
+    <p style="color:#c80a1e;font-size:14px;margin-bottom:8px;">데이터 로드 실패: ${err.message}</p>
+    <p style="color:#999;font-size:13px;">Google Sheets 공유 설정 확인 후<br>http://localhost:8080 으로 접속해주세요.</p>`;
+});
+</script>
+</body>
+</html>
