@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>일룸 오프라인 수주/매출 대시보드</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Noto Sans KR', sans-serif; background: #F5F5F7; color: #333; display: flex; height: 100vh; overflow: hidden; }
+
+/* ── SIDEBAR ── */
+#sidebar {
+  width: 220px; min-width: 220px; background: #1a1a2e; display: flex;
+  flex-direction: column; transition: width 0.2s; overflow: hidden; z-index: 200;
+}
+#sidebar.collapsed { width: 56px; min-width: 56px; }
+.sidebar-logo {
+  padding: 18px 20px 16px; border-bottom: 1px solid #2e2e4a;
+  display: flex; align-items: center; gap: 10px;
+}
+.sidebar-logo img { height: 22px; flex-shrink: 0; }
+.sidebar-logo span { font-size: 11px; color: #888; white-space: nowrap; }
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 20px; color: #aaa; text-decoration: none;
+  font-size: 13px; cursor: pointer; white-space: nowrap;
+  border-left: 3px solid transparent; transition: all 0.15s;
+}
+.nav-item:hover { background: #2a2a3e; color: #fff; }
+.nav-item.active { background: #2a2a3e; color: #fff; border-left-color: #c80a1e; }
+.nav-icon { font-size: 16px; flex-shrink: 0; width: 20px; text-align: center; }
+.nav-label { white-space: nowrap; }
+#sidebar.collapsed .nav-label { display: none; }
+#sidebar.collapsed .sidebar-logo span { display: none; }
+
+/* ── MAIN ── */
+#main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* ── HEADER ── */
+.hq-header {
+  background: #fff; border-bottom: 2px solid #c80a1e;
+  padding: 0 24px; height: 56px; display: flex;
+  align-items: center; justify-content: space-between; flex-shrink: 0;
+}
+.header-left { display: flex; align-items: center; gap: 12px; }
+.hamburger { background: none; border: none; cursor: pointer; font-size: 20px; color: #555; padding: 4px; }
+.hq-title { font-size: 15px; font-weight: 700; color: #333; }
+.hq-team { font-size: 12px; color: #999; }
+.header-meta { display: flex; align-items: center; gap: 10px; }
+.meta-badge { font-size: 12px; color: #666; background: #F0F0F0; padding: 4px 10px; border-radius: 3px; }
+.meta-badge.red { background: #c80a1e; color: #fff; font-weight: 700; }
+
+/* ── FILTER BAR ── */
+.filter-bar {
+  background: #fff; border-bottom: 1px solid #E8E8E8;
+  padding: 10px 24px; display: flex; align-items: center;
+  gap: 16px; flex-shrink: 0; flex-wrap: wrap;
+}
+.filter-group { display: flex; align-items: center; gap: 6px; }
+.filter-label { font-size: 11px; color: #999; font-weight: 600; }
+.filter-tabs { display: flex; gap: 4px; }
+.ftab {
+  padding: 5px 14px; font-size: 12px; font-weight: 700; cursor: pointer;
+  border: 1px solid #E0E0E0; background: #fff; color: #888;
+  font-family: 'Noto Sans KR', sans-serif; border-radius: 2px;
+}
+.ftab.active { background: #c80a1e; color: #fff; border-color: #c80a1e; }
+.filter-select {
+  padding: 5px 10px; font-size: 12px; font-family: 'Noto Sans KR', sans-serif;
+  border: 1px solid #E0E0E0; color: #555; background: #fff; outline: none;
+}
+
+/* ── CONTENT ── */
+#content { flex: 1; overflow-y: auto; padding: 20px 24px; }
+.section { display: none; }
+.section.active { display: block; }
+
+/* ── KPI ── */
+.kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 16px; }
+.kpi-card { background: #fff; padding: 18px 20px; border-top: 3px solid #E0E0E0; }
+.kpi-card.red { border-top-color: #c80a1e; }
+.kpi-label { font-size: 11px; color: #999; letter-spacing: 0.5px; margin-bottom: 8px; text-transform: uppercase; }
+.kpi-value { font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: 700; color: #333; }
+.kpi-card.red .kpi-value { color: #c80a1e; }
+.kpi-unit { font-size: 12px; color: #999; margin-left: 3px; }
+.kpi-sub { font-size: 11px; color: #999; margin-top: 5px; }
+
+/* ── CHARTS ── */
+.row { display: grid; gap: 12px; margin-bottom: 12px; }
+.row-1 { grid-template-columns: 1fr; }
+.row-2 { grid-template-columns: 1fr 1fr; }
+.row-3 { grid-template-columns: 1fr 1fr 1fr; }
+.row-13 { grid-template-columns: 1fr 3fr; }
+.card { background: #fff; padding: 20px 22px; }
+.card-title { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+.card-sub { font-size: 11px; color: #999; margin-bottom: 14px; }
+
+/* ── TABLE ── */
+.data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.data-table th { text-align: left; padding: 8px 10px; font-size: 11px; color: #999; font-weight: 600; border-bottom: 2px solid #E8E8E8; }
+.data-table td { padding: 8px 10px; border-bottom: 1px solid #F4F4F4; }
+.data-table tr:hover td { background: #FAFAFA; }
+.rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; font-size: 11px; font-weight: 700; background: #F0F0F0; color: #666; }
+.rank-badge.top { background: #c80a1e; color: #fff; }
+
+/* ── ANOMALY ── */
+.anomaly-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; }
+.anomaly-up { background: #dcfce7; color: #16a34a; }
+.anomaly-down { background: #fee2e2; color: #c80a1e; }
+.anomaly-zero { background: #f3f4f6; color: #555; }
+
+/* ── VIEW TABS ── */
+.view-tabs { display: flex; gap: 0; margin-bottom: 14px; border-bottom: 1px solid #E8E8E8; }
+.vtab { padding: 8px 16px; font-size: 12px; font-weight: 700; cursor: pointer; background: none; border: none; color: #999; font-family: 'Noto Sans KR', sans-serif; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.vtab.active { color: #c80a1e; border-bottom-color: #c80a1e; }
+
+/* ── NO DATA ── */
+.no-data { text-align: center; padding: 40px; font-size: 13px; color: #bbb; }
+
+/* ── PROGRESS ── */
+.progress-bar { height: 6px; background: #F0F0F0; border-radius: 3px; margin-top: 4px; }
+.progress-fill { height: 100%; border-radius: 3px; background: #c80a1e; }
+
+/* SCROLLBAR */
+#content::-webkit-scrollbar { width: 6px; }
+#content::-webkit-scrollbar-thumb { background: #E0E0E0; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ══ SIDEBAR ══ -->
+<div id="sidebar">
+  <div class="sidebar-logo">
+    <img src="iloom-logo.png" alt="iloom">
+    <span>리테일사업팀</span>
+  </div>
+  <nav style="flex:1;padding-top:8px;">
+    <a class="nav-item active" onclick="showSection('ranking')">
+      <span class="nav-icon">🏆</span><span class="nav-label">종합 랭킹</span>
+    </a>
+    <a class="nav-item" onclick="showSection('channel')">
+      <span class="nav-icon">🔄</span><span class="nav-label">채널 비교</span>
+    </a>
+    <a class="nav-item" onclick="showSection('weekly')">
+      <span class="nav-icon">📈</span><span class="nav-label">주간 수주 추이</span>
+    </a>
+    <a class="nav-item" onclick="showSection('anomaly')">
+      <span class="nav-icon">🔎</span><span class="nav-label">이상 탐지 & 메모</span>
+    </a>
+    <a class="nav-item" onclick="showSection('forecast')">
+      <span class="nav-icon">🔮</span><span class="nav-label">월말 예측</span>
+    </a>
+    <a class="nav-item" onclick="showSection('series')">
+      <span class="nav-icon">📊</span><span class="nav-label">시리즈 분석</span>
+    </a>
+    <a class="nav-item" onclick="showSection('monthly')">
+      <span class="nav-icon">📋</span><span class="nav-label">월별 보고서</span>
+    </a>
+    <a class="nav-item" onclick="showSection('daily')">
+      <span class="nav-icon">📅</span><span class="nav-label">일별 수주</span>
+    </a>
+  </nav>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div id="main">
+
+  <!-- HEADER -->
+  <header class="hq-header">
+    <div class="header-left">
+      <button class="hamburger" onclick="toggleSidebar()">☰</button>
+      <div>
+        <div class="hq-title">일룸 오프라인 수주/매출 대시보드</div>
+        <div class="hq-team">리테일사업팀</div>
+      </div>
+    </div>
+    <div class="header-meta">
+      <span class="meta-badge">전국 86개점 (직영+리테일)</span>
+      <span class="meta-badge" id="h-period">데이터 로드 중...</span>
+      <span class="meta-badge red" id="h-update">-</span>
+    </div>
+  </header>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <div class="filter-group">
+      <span class="filter-label">채널</span>
+      <div class="filter-tabs">
+        <button class="ftab active" onclick="setFilter('channel','all',this)">전체</button>
+        <button class="ftab" onclick="setFilter('channel','retail',this)">🏬 리테일</button>
+        <button class="ftab" onclick="setFilter('channel','direct',this)">🏢 직영</button>
+      </div>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">기준</span>
+      <div class="filter-tabs">
+        <button class="ftab active" onclick="setFilter('basis','order',this)">수주</button>
+        <button class="ftab" onclick="setFilter('basis','sales',this)">매출</button>
+      </div>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">기간</span>
+      <div class="filter-tabs">
+        <button class="ftab active" onclick="setFilter('period','ytd',this)">YTD 전체</button>
+        <button class="ftab" onclick="setFilter('period','month',this)">당월</button>
+      </div>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">담당자</span>
+      <select class="filter-select" id="filter-manager" onchange="applyFilters()">
+        <option value="">전체</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">사업소</span>
+      <select class="filter-select" id="filter-office" onchange="applyFilters()">
+        <option value="">전체</option>
+        <option>서울사업소</option>
+        <option>경기사업소</option>
+        <option>대전사업소</option>
+        <option>광주사업소</option>
+        <option>대구사업소</option>
+        <option>부산사업소</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div id="content">
+
+    <!-- ══ 종합 랭킹 ══ -->
+    <div id="section-ranking" class="section active">
+      <div class="kpi-grid">
+        <div class="kpi-card red">
+          <div class="kpi-label">YTD 전체 수주</div>
+          <div class="kpi-value" id="kpi-total">-<span class="kpi-unit">억</span></div>
+          <div class="kpi-sub" id="kpi-total-sub"></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">참여 점포</div>
+          <div class="kpi-value" id="kpi-stores">-<span class="kpi-unit">개점</span></div>
+          <div class="kpi-sub">직영 + 리테일</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">당월 누계</div>
+          <div class="kpi-value" id="kpi-monthly">-<span class="kpi-unit">억</span></div>
+          <div class="kpi-sub" id="kpi-monthly-sub"></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">전년 대비 (YoY)</div>
+          <div class="kpi-value" id="kpi-yoy">-<span class="kpi-unit">%</span></div>
+          <div class="kpi-sub" id="kpi-yoy-sub"></div>
+        </div>
+      </div>
+      <div class="row row-2">
+        <div class="card">
+          <div class="card-title">사업소별 수주</div>
+          <div class="card-sub">YTD 누계 (단위: 억원)</div>
+          <div style="height:260px;"><canvas id="chart-office-rank"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-title">채널 믹스</div>
+          <div class="card-sub">YTD 채널별 비중</div>
+          <div style="height:260px;"><canvas id="chart-channel-mix"></canvas></div>
+        </div>
+      </div>
+      <div class="row row-1">
+        <div class="card">
+          <div class="card-title">매장별 순위</div>
+          <div class="card-sub" id="rank-table-sub">YTD 수주 기준 전체 랭킹</div>
+          <div id="rank-table-wrap" style="height:320px;"><canvas id="chart-store-rank"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ 채널 비교 ══ -->
+    <div id="section-channel" class="section">
+      <div class="row row-2">
+        <div class="card">
+          <div class="card-title">채널별 수주 비교</div>
+          <div class="card-sub">직영 vs 리테일 월별 비교</div>
+          <div style="height:280px;"><canvas id="chart-channel-compare"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-title">전년 대비 성장률 (YoY)</div>
+          <div class="card-sub">채널별 YoY 증감률</div>
+          <div style="height:280px;"><canvas id="chart-yoy"></canvas></div>
+        </div>
+      </div>
+      <div class="row row-1">
+        <div class="card">
+          <div class="card-title">담당자별 수주/매출 비교</div>
+          <div class="card-sub">YTD 기준</div>
+          <div id="manager-table-wrap">
+            <div class="no-data">데이터 연동 후 표시됩니다.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ 주간 수주 추이 ══ -->
+    <div id="section-weekly" class="section">
+      <div class="card" style="margin-bottom:12px;">
+        <div class="card-title">채널별 주간 수주 추이</div>
+        <div class="card-sub">단위: 백만원</div>
+        <div style="height:280px;"><canvas id="chart-weekly-channel"></canvas></div>
+      </div>
+      <div class="card" style="margin-bottom:12px;">
+        <div class="card-title">사업소별 주간 수주 추이</div>
+        <div style="margin-bottom:12px;">
+          <div class="view-tabs">
+            <button class="vtab active" onclick="setWeeklyView('index',this)">📏 지수화 (1주=100)</button>
+            <button class="vtab" onclick="setWeeklyView('abs',this)">💰 절대값 (백만)</button>
+            <button class="vtab" onclick="setWeeklyView('wow',this)">📈 전주 대비 (%)</button>
+          </div>
+        </div>
+        <div style="height:280px;"><canvas id="chart-weekly-office"></canvas></div>
+      </div>
+      <div class="row row-1">
+        <div class="card">
+          <div class="card-title">대리점별 꺾은선 비교</div>
+          <div class="card-sub">최대 10개 매장 선택</div>
+          <div id="store-selector" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;"></div>
+          <div style="height:260px;"><canvas id="chart-weekly-store"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ 이상 탐지 ══ -->
+    <div id="section-anomaly" class="section">
+      <div class="card" style="margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap;">
+          <div class="filter-group">
+            <span class="filter-label">감지 기준</span>
+            <div class="filter-tabs">
+              <button class="ftab active" onclick="setAnomalyFilter('threshold','20',this)">±20%</button>
+              <button class="ftab" onclick="setAnomalyFilter('threshold','30',this)">±30%</button>
+              <button class="ftab" onclick="setAnomalyFilter('threshold','50',this)">±50%</button>
+            </div>
+          </div>
+          <div class="filter-group">
+            <span class="filter-label">유형</span>
+            <div class="filter-tabs">
+              <button class="ftab active" onclick="setAnomalyFilter('type','all',this)">전체</button>
+              <button class="ftab" onclick="setAnomalyFilter('type','up',this)">급등</button>
+              <button class="ftab" onclick="setAnomalyFilter('type','down',this)">급락</button>
+              <button class="ftab" onclick="setAnomalyFilter('type','zero',this)">0원 전환</button>
+            </div>
+          </div>
+        </div>
+        <div class="card-title">이상 탐지 결과</div>
+        <div class="card-sub">전주 대비 급등/급락 매장</div>
+        <div id="anomaly-table-wrap">
+          <div class="no-data">데이터 연동 후 표시됩니다.</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📝 매장 메모</div>
+        <div class="card-sub">이상 원인 기록</div>
+        <div id="memo-list" style="margin-bottom:12px;min-height:60px;">
+          <div class="no-data">등록된 메모가 없습니다.</div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <select class="filter-select" id="memo-store" style="flex:1;">
+            <option value="">매장 선택</option>
+          </select>
+          <input type="text" id="memo-text" placeholder="메모 내용 입력"
+            style="flex:3;padding:6px 10px;border:1px solid #E0E0E0;font-family:'Noto Sans KR',sans-serif;font-size:13px;outline:none;">
+          <button onclick="addMemo()"
+            style="padding:6px 16px;background:#c80a1e;color:#fff;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:700;">추가</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ 월말 예측 ══ -->
+    <div id="section-forecast" class="section">
+      <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);">
+        <div class="kpi-card red">
+          <div class="kpi-label">당월 현재 수주</div>
+          <div class="kpi-value" id="fc-current">-<span class="kpi-unit">억</span></div>
+          <div class="kpi-sub" id="fc-current-sub"></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">🔀 블렌드 예측</div>
+          <div class="kpi-value" id="fc-blend">-<span class="kpi-unit">억</span></div>
+          <div class="kpi-sub">잔여일 추세 반영</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">목표 달성률 (예측)</div>
+          <div class="kpi-value" id="fc-rate">-<span class="kpi-unit">%</span></div>
+          <div class="kpi-sub" id="fc-rate-sub"></div>
+        </div>
+      </div>
+      <div class="row row-2">
+        <div class="card">
+          <div class="card-title">당월 수주 추이 & 예측</div>
+          <div class="card-sub">실적(실선) + 예측(점선)</div>
+          <div style="height:280px;"><canvas id="chart-forecast"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-title">매장별 목표 달성률</div>
+          <div class="card-sub">예측 기준 달성률 순위</div>
+          <div id="forecast-table-wrap" style="max-height:300px;overflow-y:auto;">
+            <div class="no-data">데이터 연동 후 표시됩니다.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ 시리즈 분석 ══ -->
+    <div id="section-series" class="section">
+      <div class="row row-2">
+        <div class="card">
+          <div class="card-title">시리즈 TOP 10</div>
+          <div class="card-sub" id="series-sub">YTD 수주금액 기준</div>
+          <div id="series-table-wrap">
+            <div class="no-data">데이터 연동 후 표시됩니다.</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">주차별 시리즈 추이 (TOP 5)</div>
+          <div class="card-sub">주간 수주 추이</div>
+          <div style="height:300px;"><canvas id="chart-series-trend"></canvas></div>
+        </div>
+      </div>
+      <div class="row row-1">
+        <div class="card">
+          <div class="card-title">시리즈별 채널 비중</div>
+          <div class="card-sub">직영 vs 리테일 구성</div>
+          <div style="height:220px;"><canvas id="chart-series-channel"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ 월별 보고서 ══ -->
+    <div id="section-monthly" class="section">
+      <div class="row row-1">
+        <div class="card">
+          <div class="card-title">월별 수주/매출 현황</div>
+          <div class="card-sub">사업소별 월별 집계</div>
+          <div style="height:280px;"><canvas id="chart-monthly-report"></canvas></div>
+        </div>
+      </div>
+      <div class="row row-1">
+        <div class="card">
+          <div class="card-title">월별 상세 테이블</div>
+          <div class="card-sub">사업소 × 월 매트릭스</div>
+          <div id="monthly-table-wrap">
+            <div class="no-data">데이터 연동 후 표시됩니다.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ 일별 수주 ══ -->
+    <div id="section-daily" class="section">
+      <div class="row row-1">
+        <div class="card">
+          <div class="card-title">일별 수주 추이 (전국 합계)</div>
+          <div class="card-sub">단위: 백만원 · 회색=주말/공휴일</div>
+          <div style="height:240px;"><canvas id="chart-daily"></canvas></div>
+        </div>
+      </div>
+      <div class="row row-1">
+        <div class="card">
+          <div class="card-title">매장별 일별 수주</div>
+          <div class="card-sub">최대 10개 매장 선택</div>
+          <div id="daily-store-selector" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;"></div>
+          <div style="height:240px;"><canvas id="chart-daily-store"></canvas></div>
+        </div>
+      </div>
+      <div class="row row-1">
+        <div class="card">
+          <div class="card-title">일별 수주 테이블</div>
+          <div id="daily-table-wrap">
+            <div class="no-data">데이터 연동 후 표시됩니다.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+const RED = '#c80a1e';
+const OFFICE_COLORS = {
+  '서울사업소':'#c80a1e','경기사업소':'#2563eb','대전사업소':'#d97706',
+  '광주사업소':'#16a34a','대구사업소':'#7c3aed','부산사업소':'#0891b2'
+};
+const CHANNEL_COLORS = { '리테일': '#c80a1e', '직영': '#2563eb', '온라인': '#16a34a' };
+
+let charts = {};
+let currentFilters = { channel:'all', basis:'order', period:'ytd' };
+let weeklyView = 'index';
+let memos = [];
+
+// ── 샘플 데이터 (데이터 연동 전 UI 확인용) ──
+const WEEKS = ['W01','W02','W03','W04','W05','W06','W07','W08','W09','W10','W11','W12','W13','W14','W15','W16'];
+const OFFICES = ['서울사업소','경기사업소','대전사업소','광주사업소','대구사업소','부산사업소'];
+function rand(min,max){ return Math.round(Math.random()*(max-min)+min); }
+
+const SAMPLE = {
+  officeYTD: { '서울사업소':142,'경기사업소':198,'대전사업소':87,'광주사업소':73,'대구사업소':95,'부산사업소':110 },
+  channelMix: { '리테일':62, '직영':38 },
+  weeklyChannel: {
+    '리테일': WEEKS.map(()=>rand(800,1400)),
+    '직영':   WEEKS.map(()=>rand(400,800)),
+  },
+  weeklyOffice: Object.fromEntries(OFFICES.map(o=>[o, WEEKS.map(()=>rand(200,600))])),
+  dailyTotal: Array.from({length:30},()=>rand(50,350)),
+  storeRank: [
+    {name:'스타필드고양',office:'경기사업소',channel:'리테일',ytd:198,mom:12.3},
+    {name:'부산센텀4',office:'부산사업소',channel:'리테일',ytd:187,mom:-3.1},
+    {name:'대구3',office:'대구사업소',channel:'직영',ytd:165,mom:5.7},
+    {name:'서울논현4',office:'서울사업소',channel:'직영',ytd:154,mom:-1.2},
+    {name:'분당서현',office:'경기사업소',channel:'리테일',ytd:142,mom:8.4},
+    {name:'광주봉선5',office:'광주사업소',channel:'리테일',ytd:138,mom:2.1},
+    {name:'대전둔산5',office:'대전사업소',channel:'직영',ytd:131,mom:-4.5},
+    {name:'창원3',office:'부산사업소',channel:'리테일',ytd:128,mom:6.2},
+    {name:'인천중앙2',office:'경기사업소',channel:'리테일',ytd:119,mom:-2.8},
+    {name:'수원광교3',office:'경기사업소',channel:'리테일',ytd:115,mom:9.1},
+  ],
+  forecast: { current:42.3, blend:68.7, rate:87.2 },
+};
+
+function fmt(n) {
+  if(n>=100) return (n/100).toFixed(1)+'억';
+  if(n>=1) return n.toFixed(0)+'백만';
+  return n.toFixed(0)+'만';
+}
+function fmtB(n){ return (n/100).toFixed(1)+'억'; }
+
+function destroyChart(id){ if(charts[id]){charts[id].destroy();delete charts[id];} }
+
+// ── NAVIGATION ──
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('section-'+name).classList.add('active');
+  event.currentTarget.classList.add('active');
+  renderSection(name);
+}
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('collapsed');
+}
+
+// ── FILTERS ──
+function setFilter(type, val, btn) {
+  currentFilters[type] = val;
+  btn.closest('.filter-tabs').querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+function applyFilters(){ renderSection(currentActiveSection()); }
+function currentActiveSection(){
+  const active = document.querySelector('.section.active');
+  return active ? active.id.replace('section-','') : 'ranking';
+}
+
+// ── ANOMALY FILTER ──
+let anomalyFilters = {threshold:'20',type:'all'};
+function setAnomalyFilter(type,val,btn){
+  anomalyFilters[type]=val;
+  btn.closest('.filter-tabs').querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ── WEEKLY VIEW ──
+function setWeeklyView(view,btn){
+  weeklyView=view;
+  btn.closest('.view-tabs').querySelectorAll('.vtab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderWeeklyOffice();
+}
+
+// ── SECTION RENDERERS ──
+function renderSection(name){
+  const fns = {
+    ranking: renderRanking, channel: renderChannel,
+    weekly: renderWeekly,   anomaly: renderAnomaly,
+    forecast: renderForecast, series: renderSeries,
+    monthly: renderMonthly,   daily: renderDaily,
+  };
+  if(fns[name]) fns[name]();
+}
+
+// 종합 랭킹
+function renderRanking(){
+  document.getElementById('kpi-total').innerHTML = '705<span class="kpi-unit">억</span>';
+  document.getElementById('kpi-total-sub').textContent = '1월~4월 누계';
+  document.getElementById('kpi-stores').innerHTML = '86<span class="kpi-unit">개점</span>';
+  document.getElementById('kpi-monthly').innerHTML = '182<span class="kpi-unit">억</span>';
+  document.getElementById('kpi-monthly-sub').textContent = '4월 누계';
+  document.getElementById('kpi-yoy').innerHTML = '+5.3<span class="kpi-unit">%</span>';
+  document.getElementById('kpi-yoy').style.color = '#16a34a';
+
+  // 사업소별 수주 바 차트
+  destroyChart('officeRank');
+  charts['officeRank'] = new Chart(document.getElementById('chart-office-rank'),{
+    type:'bar',
+    data:{
+      labels: OFFICES,
+      datasets:[{ data: OFFICES.map(o=>SAMPLE.officeYTD[o]),
+        backgroundColor: OFFICES.map(o=>OFFICE_COLORS[o]), borderRadius:3 }]
+    },
+    options:{
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>` ${ctx.raw}억원`}} },
+      scales:{ x:{grid:{color:'#F0F0F0'},ticks:{callback:v=>v+'억'}}, y:{grid:{display:false}} }
+    }
+  });
+
+  // 채널 믹스 도넛
+  destroyChart('channelMix');
+  charts['channelMix'] = new Chart(document.getElementById('chart-channel-mix'),{
+    type:'doughnut',
+    data:{
+      labels: Object.keys(SAMPLE.channelMix),
+      datasets:[{ data: Object.values(SAMPLE.channelMix),
+        backgroundColor:[RED,'#2563eb'], borderWidth:0 }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:'60%',
+      plugins:{
+        legend:{position:'bottom',labels:{font:{family:'Noto Sans KR',size:11},padding:10}},
+        tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${ctx.raw}%`}}
+      }
+    }
+  });
+
+  // 매장 순위 바 차트
+  const sorted = [...SAMPLE.storeRank].sort((a,b)=>b.ytd-a.ytd);
+  const h = Math.max(280, sorted.length*28);
+  document.getElementById('rank-table-wrap').style.height = h+'px';
+  destroyChart('storeRank');
+  charts['storeRank'] = new Chart(document.getElementById('chart-store-rank'),{
+    type:'bar',
+    data:{
+      labels: sorted.map(s=>s.name),
+      datasets:[{ data: sorted.map(s=>s.ytd),
+        backgroundColor: sorted.map(s=>OFFICE_COLORS[s.office]||'#ccc'), borderRadius:2 }]
+    },
+    options:{
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>` ${ctx.raw}백만원`}} },
+      scales:{ x:{grid:{color:'#F0F0F0'},ticks:{callback:v=>v+'백만'}}, y:{grid:{display:false},ticks:{font:{family:'Noto Sans KR',size:11}}} }
+    }
+  });
+}
+
+// 채널 비교
+function renderChannel(){
+  const months=['1월','2월','3월','4월'];
+  destroyChart('channelCompare');
+  charts['channelCompare'] = new Chart(document.getElementById('chart-channel-compare'),{
+    type:'bar',
+    data:{
+      labels:months,
+      datasets:[
+        {label:'리테일',data:[420,445,398,432],backgroundColor:RED,borderRadius:3},
+        {label:'직영',data:[280,265,301,288],backgroundColor:'#2563eb',borderRadius:3},
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{font:{family:'Noto Sans KR',size:11},padding:10}}},
+      scales:{x:{grid:{display:false}},y:{grid:{color:'#F0F0F0'},ticks:{callback:v=>v+'백만'}}}
+    }
+  });
+
+  destroyChart('yoy');
+  charts['yoy'] = new Chart(document.getElementById('chart-yoy'),{
+    type:'bar',
+    data:{
+      labels:months,
+      datasets:[
+        {label:'리테일 YoY',data:[5.2,3.8,-1.2,7.4],backgroundColor:months.map((_,i)=>([5.2,3.8,-1.2,7.4][i]>=0?'#dcfce7':'#fee2e2']),borderRadius:3},
+        {label:'직영 YoY',data:[2.1,4.5,6.3,1.8],backgroundColor:'#dbeafe',borderRadius:3},
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{font:{family:'Noto Sans KR',size:11},padding:10}},
+               tooltip:{callbacks:{label:ctx=>` ${ctx.raw>0?'+':''}${ctx.raw}%`}}},
+      scales:{x:{grid:{display:false}},y:{grid:{color:'#F0F0F0'},ticks:{callback:v=>v+'%'}}}
+    }
+  });
+}
+
+// 주간 추이
+function renderWeekly(){
+  destroyChart('weeklyChannel');
+  charts['weeklyChannel'] = new Chart(document.getElementById('chart-weekly-channel'),{
+    type:'line',
+    data:{
+      labels:WEEKS,
+      datasets:[
+        {label:'리테일',data:SAMPLE.weeklyChannel['리테일'],borderColor:RED,backgroundColor:RED+'22',borderWidth:2,pointRadius:3,tension:0.3,fill:false},
+        {label:'직영',data:SAMPLE.weeklyChannel['직영'],borderColor:'#2563eb',backgroundColor:'#2563eb22',borderWidth:2,pointRadius:3,tension:0.3,fill:false},
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{position:'bottom',labels:{font:{family:'Noto Sans KR',size:11},padding:12,usePointStyle:true}},
+               tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label}: ${ctx.raw}백만원`}}},
+      scales:{x:{grid:{display:false}},y:{grid:{color:'#F0F0F0'},ticks:{callback:v=>v+'백만'}}}
+    }
+  });
+  renderWeeklyOffice();
+}
+
+function renderWeeklyOffice(){
+  let data = {};
+  if(weeklyView==='index'){
+    OFFICES.forEach(o=>{
+      const base=SAMPLE.weeklyOffice[o][0]||1;
+      data[o]=SAMPLE.weeklyOffice[o].map(v=>Math.round(v/base*100));
+    });
+  } else if(weeklyView==='wow'){
+    OFFICES.forEach(o=>{
+      data[o]=SAMPLE.weeklyOffice[o].map((v,i)=>i===0?0:Math.round((v-SAMPLE.weeklyOffice[o][i-1])/SAMPLE.weeklyOffice[o][i-1]*100));
+    });
+  } else {
+    data=SAMPLE.weeklyOffice;
+  }
+
+  destroyChart('weeklyOffice');
+  charts['weeklyOffice'] = new Chart(document.getElementById('chart-weekly-office'),{
+    type:'line',
+    data:{
+      labels:WEEKS,
+      datasets:OFFICES.map(o=>({
+        label:o, data:data[o],
+        borderColor:OFFICE_COLORS[o], backgroundColor:OFFICE_COLORS[o]+'22',
+        borderWidth:2, pointRadius:2, tension:0.3, fill:false,
+      }))
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{position:'bottom',labels:{font:{family:'Noto Sans KR',size:11},padding:10,usePointStyle:true,boxWidth:10}}},
+      scales:{
+        x:{grid:{display:false}},
+        y:{grid:{color:'#F0F0F0'},ticks:{callback:v=>weeklyView==='index'?v:weeklyView==='wow'?v+'%':v+'백만'}}
+      }
+    }
+  });
+}
+
+// 이상 탐지
+function renderAnomaly(){
+  document.getElementById('anomaly-table-wrap').innerHTML = `
+    <table class="data-table">
+      <thead><tr>
+        <th>매장</th><th>사업소</th><th>채널</th><th>유형</th>
+        <th style="text-align:right">전주</th><th style="text-align:right">금주</th><th style="text-align:right">변화율</th>
+      </tr></thead>
+      <tbody>
+        <tr><td>스타필드수원</td><td>경기사업소</td><td>리테일</td><td><span class="anomaly-badge anomaly-up">급등</span></td><td style="text-align:right">82백만</td><td style="text-align:right">134백만</td><td style="text-align:right;color:#16a34a;font-weight:700">+63.4%</td></tr>
+        <tr><td>마산6</td><td>부산사업소</td><td>리테일</td><td><span class="anomaly-badge anomaly-down">급락</span></td><td style="text-align:right">95백만</td><td style="text-align:right">41백만</td><td style="text-align:right;color:#c80a1e;font-weight:700">-56.8%</td></tr>
+        <tr><td>서산4</td><td>대전사업소</td><td>리테일</td><td><span class="anomaly-badge anomaly-zero">0원 전환</span></td><td style="text-align:right">67백만</td><td style="text-align:right">0</td><td style="text-align:right;color:#555">-100%</td></tr>
+        <tr><td>원주3</td><td>대구사업소</td><td>리테일</td><td><span class="anomaly-badge anomaly-up">급등</span></td><td style="text-align:right">44백만</td><td style="text-align:right">89백만</td><td style="text-align:right;color:#16a34a;font-weight:700">+102.3%</td></tr>
+        <tr><td>안동5</td><td>대구사업소</td><td>리테일</td><td><span class="anomaly-badge anomaly-down">급락</span></td><td style="text-align:right">71백만</td><td style="text-align:right">29백만</td><td style="text-align:right;color:#c80a1e;font-weight:700">-59.2%</td></tr>
+      </tbody>
+    </table>`;
+}
+
+// 월말 예측
+function renderForecast(){
+  document.getElementById('fc-current').innerHTML = `${SAMPLE.forecast.current}<span class="kpi-unit">억</span>`;
+  document.getElementById('fc-blend').innerHTML = `${SAMPLE.forecast.blend}<span class="kpi-unit">억</span>`;
+  document.getElementById('fc-rate').innerHTML = `${SAMPLE.forecast.rate}<span class="kpi-unit">%</span>`;
+  document.getElementById('fc-rate').style.color = SAMPLE.forecast.rate>=100?'#16a34a':RED;
+
+  const days = Array.from({length:30},(_,i)=>`${i+1}일`);
+  const actual = Array.from({length:19},()=>rand(30,120));
+  const predicted = [null,...Array(10).fill(null),...Array.from({length:11},()=>rand(30,100))];
+  destroyChart('forecast');
+  charts['forecast'] = new Chart(document.getElementById('chart-forecast'),{
+    type:'line',
+    data:{
+      labels:days,
+      datasets:[
+        {label:'실적',data:[...actual,...Array(11).fill(null)],borderColor:RED,borderWidth:2,pointRadius:2,tension:0.3,fill:false},
+        {label:'예측',data:[...Array(18).fill(null),actual[18],...predicted.slice(1)],borderColor:'#888',borderWidth:2,borderDash:[5,4],pointRadius:2,tension:0.3,fill:false},
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{font:{family:'Noto Sans KR',size:11},padding:10,usePointStyle:true}},
+               tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label}: ${ctx.raw}백만원`}}},
+      scales:{x:{grid:{display:false},ticks:{maxTicksLimit:10}},y:{grid:{color:'#F0F0F0'},ticks:{callback:v=>v+'백만'}}}
+    }
+  });
+}
+
+// 시리즈 분석
+function renderSeries(){
+  const series = ['라디우스','엘리움','첼시','마레','에르디아','루시','센트','알바','클레','베르디'];
+  const vals = series.map(()=>rand(200,1200));
+  document.getElementById('series-table-wrap').innerHTML = `
+    <table class="data-table">
+      <thead><tr><th>순위</th><th>시리즈</th><th style="text-align:right">YTD 수주</th><th style="text-align:right">전주 대비</th></tr></thead>
+      <tbody>${series.map((s,i)=>`
+        <tr>
+          <td><span class="rank-badge${i<3?' top':''}">${i+1}</span></td>
+          <td>${s}</td>
+          <td style="text-align:right;font-family:'Montserrat',sans-serif;font-weight:600;">${vals[i]}백만</td>
+          <td style="text-align:right;color:${rand(-1,1)>0?'#16a34a':RED};font-weight:700;">${rand(-1,1)>0?'+':''}${rand(-15,20)}%</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+
+  const top5 = series.slice(0,5);
+  destroyChart('seriesTrend');
+  charts['seriesTrend'] = new Chart(document.getElementById('chart-series-trend'),{
+    type:'line',
+    data:{
+      labels:WEEKS,
+      datasets:top5.map((s,i)=>({
+        label:s, data:WEEKS.map(()=>rand(30,200)),
+        borderColor:[RED,'#2563eb','#16a34a','#d97706','#7c3aed'][i],
+        borderWidth:2,pointRadius:2,tension:0.3,fill:false
+      }))
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{position:'bottom',labels:{font:{family:'Noto Sans KR',size:11},padding:10,usePointStyle:true,boxWidth:10}},
+               tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label}: ${ctx.raw}백만원`}}},
+      scales:{x:{grid:{display:false}},y:{grid:{color:'#F0F0F0'},ticks:{callback:v=>v+'백만'}}}
+    }
+  });
+}
+
+// 월별 보고서
+function renderMonthly(){
+  const months=['1월','2월','3월','4월'];
+  destroyChart('monthlyReport');
+  charts['monthlyReport'] = new Chart(document.getElementById('chart-monthly-report'),{
+    type:'bar',
+    data:{
+      labels:months,
+      datasets:OFFICES.map(o=>({
+        label:o, data:months.map(()=>rand(100,400)),
+        backgroundColor:OFFICE_COLORS[o], borderRadius:2,
+      }))
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{font:{family:'Noto Sans KR',size:11},padding:10,boxWidth:10}}},
+      scales:{x:{grid:{display:false},stacked:true},y:{grid:{color:'#F0F0F0'},ticks:{callback:v=>v+'백만'},stacked:true}}
+    }
+  });
+}
+
+// 일별 수주
+function renderDaily(){
+  const days = Array.from({length:30},(_,i)=>`${i+1}`);
+  const isWeekend = [false,false,true,true,false,false,false,true,true,false,false,false,true,true,false,false,false,false,false,true,true,false,false,false,false,false,true,true,false,false];
+  const data = SAMPLE.dailyTotal;
+
+  destroyChart('daily');
+  charts['daily'] = new Chart(document.getElementById('chart-daily'),{
+    type:'bar',
+    data:{
+      labels:days,
+      datasets:[{
+        data,
+        backgroundColor:data.map((_,i)=>isWeekend[i]?'#E0E0E0':RED),
+        borderRadius:2
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.raw}백만원`}}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:'#F0F0F0'},ticks:{callback:v=>v+'백만'}}}
+    }
+  });
+}
+
+// ── MEMO ──
+function addMemo(){
+  const store = document.getElementById('memo-store').value;
+  const text  = document.getElementById('memo-text').value.trim();
+  if(!store||!text) return;
+  memos.push({store,text,time:new Date().toLocaleString('ko-KR')});
+  renderMemos();
+  document.getElementById('memo-text').value='';
+}
+function renderMemos(){
+  const el=document.getElementById('memo-list');
+  if(!memos.length){el.innerHTML='<div class="no-data">등록된 메모가 없습니다.</div>';return;}
+  el.innerHTML=memos.map((m,i)=>`
+    <div style="padding:8px 12px;background:#FAFAFA;border-left:3px solid ${RED};margin-bottom:6px;display:flex;justify-content:space-between;align-items:flex-start;">
+      <div>
+        <span style="font-size:12px;font-weight:700;color:#333;">${m.store}</span>
+        <span style="font-size:11px;color:#999;margin-left:8px;">${m.time}</span>
+        <div style="font-size:13px;margin-top:4px;">${m.text}</div>
+      </div>
+      <button onclick="memos.splice(${i},1);renderMemos();" style="background:none;border:none;color:#bbb;cursor:pointer;font-size:14px;flex-shrink:0;">×</button>
+    </div>`).join('');
+}
+
+// ── INIT ──
+document.getElementById('h-period').textContent = '2026-01 ~ 2026-04';
+document.getElementById('h-update').textContent = '데이터 연동 대기중';
+renderRanking();
+</script>
+</body>
+</html>

@@ -6,7 +6,6 @@
 <title>일룸 매출 대시보드</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Noto Sans KR', sans-serif; background: #F8F8F8; color: #333; }
@@ -35,6 +34,11 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #F8F8F8; color: #333
 }
 .login-btn:hover { background: #a00816; }
 .login-error { font-size: 13px; color: #c80a1e; margin-top: 10px; min-height: 18px; }
+.login-hint { font-size: 12px; color: #888; margin-top: 6px; display: flex; align-items: center; gap: 5px; min-height: 16px; }
+.login-hint.warn { color: #d97706; }
+.login-tips { margin-top: 14px; padding-top: 14px; border-top: 1px solid #F0F0F0; }
+.login-tips li { font-size: 12px; color: #bbb; margin-bottom: 4px; list-style: none; padding-left: 14px; position: relative; }
+.login-tips li::before { content: '·'; position: absolute; left: 0; }
 
 /* HEADER */
 #dashboard { display: none; }
@@ -100,6 +104,84 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #F8F8F8; color: #333
 }
 .main-tab-btn:hover { color: #555; }
 .main-tab-btn.active { color: #c80a1e; border-bottom-color: #c80a1e; }
+
+/* ── HQ DASHBOARD ── */
+#hq-dashboard { display: none; height: 100vh; overflow: hidden; }
+#hq-dashboard.show { display: flex; }
+#sidebar {
+  width: 220px; min-width: 220px; background: #1a1a2e;
+  display: flex; flex-direction: column; transition: width 0.2s; overflow: hidden; z-index: 200;
+}
+#sidebar.collapsed { width: 56px; min-width: 56px; }
+.sidebar-logo { padding: 18px 20px 16px; border-bottom: 1px solid #2e2e4a; display: flex; align-items: center; gap: 10px; }
+.sidebar-logo img { height: 22px; flex-shrink: 0; }
+.sidebar-logo span { font-size: 11px; color: #888; white-space: nowrap; }
+.nav-item {
+  display: flex; align-items: center; gap: 12px; padding: 12px 20px;
+  color: #aaa; text-decoration: none; font-size: 13px; cursor: pointer;
+  white-space: nowrap; border-left: 3px solid transparent; transition: all 0.15s;
+}
+.nav-item:hover { background: #2a2a3e; color: #fff; }
+.nav-item.active { background: #2a2a3e; color: #fff; border-left-color: #c80a1e; }
+.nav-icon { font-size: 16px; flex-shrink: 0; width: 20px; text-align: center; }
+.nav-label { white-space: nowrap; }
+#sidebar.collapsed .nav-label, #sidebar.collapsed .sidebar-logo span { display: none; }
+#hq-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #F5F5F7; }
+.hq-header {
+  background: #fff; border-bottom: 2px solid #c80a1e;
+  padding: 0 24px; height: 56px; display: flex; align-items: center;
+  justify-content: space-between; flex-shrink: 0;
+}
+.header-left { display: flex; align-items: center; gap: 12px; }
+.hamburger { background: none; border: none; cursor: pointer; font-size: 20px; color: #555; padding: 4px; }
+.hq-title { font-size: 15px; font-weight: 700; color: #333; }
+.hq-team { font-size: 12px; color: #999; }
+.header-meta { display: flex; align-items: center; gap: 10px; }
+.meta-badge { font-size: 12px; color: #666; background: #F0F0F0; padding: 4px 10px; border-radius: 3px; }
+.meta-badge.red { background: #c80a1e; color: #fff; font-weight: 700; }
+.hq-filter-bar {
+  background: #fff; border-bottom: 1px solid #E8E8E8;
+  padding: 10px 24px; display: flex; align-items: center; gap: 16px; flex-shrink: 0; flex-wrap: wrap;
+}
+.filter-group { display: flex; align-items: center; gap: 6px; }
+.filter-label { font-size: 11px; color: #999; font-weight: 600; }
+.filter-tabs { display: flex; gap: 4px; }
+.ftab {
+  padding: 5px 14px; font-size: 12px; font-weight: 700; cursor: pointer;
+  border: 1px solid #E0E0E0; background: #fff; color: #888;
+  font-family: 'Noto Sans KR', sans-serif; border-radius: 2px;
+}
+.ftab.active { background: #c80a1e; color: #fff; border-color: #c80a1e; }
+.filter-select { padding: 5px 10px; font-size: 12px; font-family: 'Noto Sans KR', sans-serif; border: 1px solid #E0E0E0; color: #555; background: #fff; outline: none; }
+#hq-content { flex: 1; overflow-y: auto; padding: 20px 24px; }
+#hq-content::-webkit-scrollbar { width: 6px; }
+#hq-content::-webkit-scrollbar-thumb { background: #E0E0E0; border-radius: 3px; }
+.hq-section { display: none; }
+.hq-section.active { display: block; }
+.hq-row { display: grid; gap: 12px; margin-bottom: 12px; }
+.hq-row.r1 { grid-template-columns: 1fr; }
+.hq-row.r2 { grid-template-columns: 1fr 1fr; }
+.hq-row.r3 { grid-template-columns: 1fr 1fr 1fr; }
+.hq-kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 16px; }
+.hq-kpi-card { background: #fff; padding: 18px 20px; border-top: 3px solid #E0E0E0; }
+.hq-kpi-card.red { border-top-color: #c80a1e; }
+.hq-kpi-card .kpi-label { margin-bottom: 8px; }
+.hq-kpi-card .kpi-value { font-size: 24px; }
+.hq-kpi-card.red .kpi-value { color: #c80a1e; }
+.hq-card { background: #fff; padding: 20px 22px; }
+.data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.data-table th { text-align: left; padding: 8px 10px; font-size: 11px; color: #999; font-weight: 600; border-bottom: 2px solid #E8E8E8; }
+.data-table td { padding: 8px 10px; border-bottom: 1px solid #F4F4F4; }
+.data-table tr:hover td { background: #FAFAFA; }
+.rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; font-size: 11px; font-weight: 700; background: #F0F0F0; color: #666; }
+.rank-badge.top { background: #c80a1e; color: #fff; }
+.anomaly-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; }
+.anomaly-up { background: #dcfce7; color: #16a34a; }
+.anomaly-down { background: #fee2e2; color: #c80a1e; }
+.anomaly-zero { background: #f3f4f6; color: #555; }
+.view-tabs { display: flex; margin-bottom: 14px; border-bottom: 1px solid #E8E8E8; }
+.vtab { padding: 8px 16px; font-size: 12px; font-weight: 700; cursor: pointer; background: none; border: none; color: #999; font-family: 'Noto Sans KR', sans-serif; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.vtab.active { color: #c80a1e; border-bottom-color: #c80a1e; }
 </style>
 </head>
 <body>
@@ -111,19 +193,55 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #F8F8F8; color: #333
 
 <div id="login-screen" style="display:none;">
   <div class="login-box">
-    <div class="login-logo">iloom</div>
-    <div class="login-subtitle">매장 매출 대시보드</div>
-    <select id="store-select"><option value="">매장을 선택하세요</option></select>
-    <input type="password" id="store-pw" placeholder="비밀번호" onkeydown="if(event.key==='Enter')doLogin()" style="display:none;">
-    <button class="login-btn" onclick="doLogin()">로그인</button>
+    <img src="iloom-logo.png" alt="iloom" style="height:36px;margin-bottom:16px;">
+
+    <!-- 계정 유형 탭 -->
+    <div style="display:flex;border-bottom:2px solid #E0E0E0;margin-bottom:20px;">
+      <button id="login-tab-dealer" onclick="setLoginMode('dealer')"
+        style="flex:1;padding:10px 0;font-size:13px;font-weight:700;font-family:'Noto Sans KR',sans-serif;
+               background:none;border:none;border-bottom:3px solid #c80a1e;margin-bottom:-2px;
+               color:#c80a1e;cursor:pointer;">대리점</button>
+      <button id="login-tab-hq" onclick="setLoginMode('hq')"
+        style="flex:1;padding:10px 0;font-size:13px;font-weight:700;font-family:'Noto Sans KR',sans-serif;
+               background:none;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;
+               color:#999;cursor:pointer;">본사</button>
+    </div>
+
+    <!-- 대리점 폼 -->
+    <div id="login-form-dealer">
+      <select id="store-select"><option value="">매장을 선택하세요</option></select>
+      <input type="password" id="store-pw" placeholder="비밀번호" onkeydown="checkCapsLock(event);if(event.key==='Enter')doLogin()" onkeyup="checkCapsLock(event)" style="display:none;">
+      <button class="login-btn" onclick="doLogin()">로그인</button>
+    </div>
+
+    <!-- 본사 폼 -->
+    <div id="login-form-hq" style="display:none;">
+      <input type="text" id="hq-id" placeholder="아이디"
+        style="width:100%;padding:12px 14px;border:1px solid #E0E0E0;font-family:'Noto Sans KR',sans-serif;
+               font-size:14px;color:#333;background:#fff;margin-bottom:10px;outline:none;"
+        onkeydown="if(event.key==='Enter')doHqLogin()">
+      <input type="password" id="hq-pw" placeholder="비밀번호"
+        style="width:100%;padding:12px 14px;border:1px solid #E0E0E0;font-family:'Noto Sans KR',sans-serif;
+               font-size:14px;color:#333;background:#fff;margin-bottom:10px;outline:none;"
+        onkeydown="checkCapsLock(event);if(event.key==='Enter')doHqLogin()"
+        onkeyup="checkCapsLock(event)">
+      <button class="login-btn" onclick="doHqLogin()">로그인</button>
+    </div>
+
     <div class="login-error" id="login-error"></div>
+    <div class="login-hint" id="login-hint"></div>
+    <ul class="login-tips" id="login-tips" style="display:none;">
+      <li>아이디/비밀번호를 다시 확인해주세요.</li>
+      <li>Caps Lock이 켜져 있으면 꺼주세요.</li>
+      <li>대리점은 매장 선택 후 로그인해주세요.</li>
+    </ul>
   </div>
 </div>
 
 <div id="dashboard">
   <header class="header">
     <div style="display:flex;align-items:center;">
-      <span class="logo">iloom</span>
+      <img src="iloom-logo.png" alt="iloom" style="height:28px;">
       <span class="store-badge" id="h-store"></span>
       <span class="office-tag" id="h-office"></span>
     </div>
@@ -218,19 +336,221 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #F8F8F8; color: #333
           <div id="comp-content" style="flex:1;"></div>
         </div>
       </div>
+      <div class="chart-row row-1">
+        <div class="card">
+          <div class="card-title">브랜드별 매출 추이</div>
+          <div class="card-sub" id="brand-trend-sub">상권 기준 월별 꺾은선</div>
+          <div style="height:260px;"><canvas id="chart-brand-trend"></canvas></div>
+        </div>
+      </div>
     </div>
 
     <!-- Tab: 품목별 매출현황 -->
     <div id="tab-item" style="display:none;">
-      <div class="card" style="text-align:center;padding:80px 0;">
-        <div style="font-size:32px;color:#E0E0E0;margin-bottom:16px;">📊</div>
-        <div style="font-size:14px;color:#bbb;">품목별 매출 데이터 연동 준비 중입니다.</div>
-        <div style="font-size:12px;color:#ccc;margin-top:8px;">자료 추가 후 업데이트 예정</div>
+      <!-- 필터 바 -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+        <input type="text" id="item-search" placeholder="세트코드 검색 (예: HSO)"
+          style="padding:8px 12px;border:1px solid #E0E0E0;font-family:'Noto Sans KR',sans-serif;font-size:13px;width:200px;outline:none;"
+          oninput="renderItems()">
+        <div style="display:flex;gap:4px;flex-wrap:wrap;" id="item-prefix-filter"></div>
+        <span style="font-size:12px;color:#999;margin-left:auto;" id="item-count-label"></span>
+      </div>
+      <!-- KPI -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px;">
+        <div class="kpi-card primary">
+          <div class="kpi-label">품목 종류 (세트코드)</div>
+          <div class="kpi-value" id="item-kpi-sets">-<span class="kpi-unit">종</span></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">총 수주 건수</div>
+          <div class="kpi-value" id="item-kpi-orders">-<span class="kpi-unit">건</span></div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">품목별 총 매출</div>
+          <div class="kpi-value" id="item-kpi-amt">-<span class="kpi-unit">원</span></div>
+        </div>
+      </div>
+      <!-- 차트 -->
+      <div class="chart-row row-1" style="margin-bottom:16px;">
+        <div class="card">
+          <div class="card-title">세트코드별 매출 TOP 20</div>
+          <div class="card-sub">수주금액 기준 (단품 합산)</div>
+          <div id="item-chart-wrap" style="height:420px;"><canvas id="chart-items"></canvas></div>
+        </div>
+      </div>
+      <!-- 테이블 -->
+      <div class="chart-row row-1">
+        <div class="card">
+          <div class="card-title">품목별 상세</div>
+          <div class="card-sub">세트코드 기준 · 수주건수는 중복 제거</div>
+          <div id="item-table-wrap" style="max-height:400px;overflow-y:auto;">
+            <div class="no-data">로그인 후 데이터가 표시됩니다.</div>
+          </div>
+        </div>
       </div>
     </div>
 
   </div>
 </div>
+
+<!-- ══════════════════════════════════════════
+     본사 대시보드
+══════════════════════════════════════════ -->
+<div id="hq-dashboard">
+  <!-- SIDEBAR -->
+  <div id="sidebar">
+    <div class="sidebar-logo">
+      <span style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:22px;color:#c80a1e;letter-spacing:-0.5px;flex-shrink:0;">iloom</span>
+      <span>리테일사업팀</span>
+    </div>
+    <nav style="flex:1;padding-top:8px;">
+      <a class="nav-item active" onclick="hqShowSection('ranking',this)"><span class="nav-icon">🏆</span><span class="nav-label">종합 랭킹</span></a>
+      <a class="nav-item" onclick="hqShowSection('channel',this)"><span class="nav-icon">🔄</span><span class="nav-label">채널 비교</span></a>
+      <a class="nav-item" onclick="hqShowSection('weekly',this)"><span class="nav-icon">📈</span><span class="nav-label">주간 수주 추이</span></a>
+      <a class="nav-item" onclick="hqShowSection('anomaly',this)"><span class="nav-icon">🔎</span><span class="nav-label">이상 탐지 & 메모</span></a>
+      <a class="nav-item" onclick="hqShowSection('forecast',this)"><span class="nav-icon">🔮</span><span class="nav-label">월말 예측</span></a>
+      <a class="nav-item" onclick="hqShowSection('series',this)"><span class="nav-icon">📊</span><span class="nav-label">시리즈 분석</span></a>
+      <a class="nav-item" onclick="hqShowSection('monthly',this)"><span class="nav-icon">📋</span><span class="nav-label">월별 보고서</span></a>
+      <a class="nav-item" onclick="hqShowSection('daily',this)"><span class="nav-icon">📅</span><span class="nav-label">일별 수주</span></a>
+    </nav>
+    <a class="nav-item" onclick="doLogout()" style="border-top:1px solid #2e2e4a;flex-shrink:0;">
+      <span class="nav-icon">↩</span><span class="nav-label">로그아웃</span>
+    </a>
+  </div>
+
+  <!-- MAIN -->
+  <div id="hq-main">
+    <header class="hq-header">
+      <div class="header-left">
+        <button class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('collapsed')">☰</button>
+        <div>
+          <div class="hq-title">일룸 오프라인 수주/매출 대시보드</div>
+          <div class="hq-team">리테일사업팀</div>
+        </div>
+      </div>
+      <div class="header-meta">
+        <span class="meta-badge">전국 86개점 (직영+리테일)</span>
+        <span class="meta-badge" id="hq-h-period">데이터 로드 중...</span>
+        <span class="meta-badge red" id="hq-h-update">데이터 연동 대기중</span>
+      </div>
+    </header>
+
+    <div class="hq-filter-bar">
+      <div class="filter-group">
+        <span class="filter-label">채널</span>
+        <div class="filter-tabs">
+          <button class="ftab active" onclick="hqSetFilter('channel','all',this)">전체</button>
+          <button class="ftab" onclick="hqSetFilter('channel','retail',this)">🏬 리테일</button>
+          <button class="ftab" onclick="hqSetFilter('channel','direct',this)">🏢 직영</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">기준</span>
+        <div class="filter-tabs">
+          <button class="ftab active" onclick="hqSetFilter('basis','order',this)">수주</button>
+          <button class="ftab" onclick="hqSetFilter('basis','sales',this)">매출</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">기간</span>
+        <div class="filter-tabs">
+          <button class="ftab active" onclick="hqSetFilter('period','ytd',this)">YTD 전체</button>
+          <button class="ftab" onclick="hqSetFilter('period','month',this)">당월</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">사업소</span>
+        <select class="filter-select" onchange="hqApplyFilters()">
+          <option value="">전체</option>
+          <option>서울사업소</option><option>경기사업소</option><option>대전사업소</option>
+          <option>광주사업소</option><option>대구사업소</option><option>부산사업소</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="hq-content">
+      <!-- 종합 랭킹 -->
+      <div id="hq-section-ranking" class="hq-section active">
+        <div class="hq-kpi-grid">
+          <div class="hq-kpi-card red"><div class="kpi-label">YTD 전체 수주</div><div class="kpi-value" id="hq-kpi-total">-<span class="kpi-unit">억</span></div><div class="kpi-sub" id="hq-kpi-total-sub"></div></div>
+          <div class="hq-kpi-card"><div class="kpi-label">참여 점포</div><div class="kpi-value" id="hq-kpi-stores">86<span class="kpi-unit">개점</span></div><div class="kpi-sub">직영 + 리테일</div></div>
+          <div class="hq-kpi-card"><div class="kpi-label">당월 누계</div><div class="kpi-value" id="hq-kpi-monthly">-<span class="kpi-unit">억</span></div><div class="kpi-sub" id="hq-kpi-monthly-sub"></div></div>
+          <div class="hq-kpi-card"><div class="kpi-label">전년 대비 (YoY)</div><div class="kpi-value" id="hq-kpi-yoy">-<span class="kpi-unit">%</span></div></div>
+        </div>
+        <div class="hq-row r2">
+          <div class="hq-card"><div class="card-title">사업소별 수주</div><div class="card-sub">YTD 누계 (단위: 억원)</div><div style="height:260px;"><canvas id="chart-office-rank"></canvas></div></div>
+          <div class="hq-card"><div class="card-title">채널 믹스</div><div class="card-sub">YTD 채널별 비중</div><div style="height:260px;"><canvas id="chart-channel-mix"></canvas></div></div>
+        </div>
+        <div class="hq-row r1">
+          <div class="hq-card"><div class="card-title">매장별 순위</div><div class="card-sub">YTD 수주 기준 전체 랭킹</div><div id="rank-table-wrap" style="height:320px;"><canvas id="chart-store-rank"></canvas></div></div>
+        </div>
+      </div>
+      <!-- 채널 비교 -->
+      <div id="hq-section-channel" class="hq-section">
+        <div class="hq-row r2">
+          <div class="hq-card"><div class="card-title">채널별 수주 비교</div><div class="card-sub">직영 vs 리테일 월별 비교</div><div style="height:280px;"><canvas id="chart-channel-compare"></canvas></div></div>
+          <div class="hq-card"><div class="card-title">전년 대비 성장률 (YoY)</div><div class="card-sub">채널별 YoY 증감률</div><div style="height:280px;"><canvas id="chart-yoy"></canvas></div></div>
+        </div>
+      </div>
+      <!-- 주간 수주 추이 -->
+      <div id="hq-section-weekly" class="hq-section">
+        <div class="hq-card" style="margin-bottom:12px;"><div class="card-title">채널별 주간 수주 추이</div><div class="card-sub">단위: 백만원</div><div style="height:260px;"><canvas id="chart-weekly-channel"></canvas></div></div>
+        <div class="hq-card" style="margin-bottom:12px;">
+          <div class="card-title">사업소별 주간 수주 추이</div>
+          <div class="view-tabs" style="margin-top:8px;">
+            <button class="vtab active" onclick="hqSetWeeklyView('index',this)">📏 지수화 (1주=100)</button>
+            <button class="vtab" onclick="hqSetWeeklyView('abs',this)">💰 절대값 (백만)</button>
+            <button class="vtab" onclick="hqSetWeeklyView('wow',this)">📈 전주 대비 (%)</button>
+          </div>
+          <div style="height:260px;"><canvas id="chart-weekly-office"></canvas></div>
+        </div>
+      </div>
+      <!-- 이상 탐지 -->
+      <div id="hq-section-anomaly" class="hq-section">
+        <div class="hq-card" style="margin-bottom:12px;">
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap;">
+            <div class="filter-group"><span class="filter-label">감지 기준</span><div class="filter-tabs"><button class="ftab active" onclick="hqAnomalyFilter('threshold','20',this)">±20%</button><button class="ftab" onclick="hqAnomalyFilter('threshold','30',this)">±30%</button><button class="ftab" onclick="hqAnomalyFilter('threshold','50',this)">±50%</button></div></div>
+            <div class="filter-group"><span class="filter-label">유형</span><div class="filter-tabs"><button class="ftab active" onclick="hqAnomalyFilter('type','all',this)">전체</button><button class="ftab" onclick="hqAnomalyFilter('type','up',this)">급등</button><button class="ftab" onclick="hqAnomalyFilter('type','down',this)">급락</button><button class="ftab" onclick="hqAnomalyFilter('type','zero',this)">0원 전환</button></div></div>
+          </div>
+          <div class="card-title">이상 탐지 결과</div><div class="card-sub">전주 대비 급등/급락 매장</div>
+          <div id="hq-anomaly-table"><div class="no-data">데이터 연동 후 표시됩니다.</div></div>
+        </div>
+        <div class="hq-card">
+          <div class="card-title">📝 매장 메모</div><div class="card-sub">이상 원인 기록</div>
+          <div id="hq-memo-list" style="margin-bottom:12px;min-height:60px;"><div class="no-data">등록된 메모가 없습니다.</div></div>
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="hq-memo-text" placeholder="매장명 및 메모 내용 입력" style="flex:1;padding:6px 10px;border:1px solid #E0E0E0;font-family:'Noto Sans KR',sans-serif;font-size:13px;outline:none;">
+            <button onclick="hqAddMemo()" style="padding:6px 16px;background:#c80a1e;color:#fff;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:700;">추가</button>
+          </div>
+        </div>
+      </div>
+      <!-- 월말 예측 -->
+      <div id="hq-section-forecast" class="hq-section">
+        <div class="hq-kpi-grid" style="grid-template-columns:repeat(3,1fr);">
+          <div class="hq-kpi-card red"><div class="kpi-label">당월 현재 수주</div><div class="kpi-value" id="hq-fc-current">42.3<span class="kpi-unit">억</span></div></div>
+          <div class="hq-kpi-card"><div class="kpi-label">🔀 블렌드 예측</div><div class="kpi-value" id="hq-fc-blend">68.7<span class="kpi-unit">억</span></div></div>
+          <div class="hq-kpi-card"><div class="kpi-label">목표 달성률 (예측)</div><div class="kpi-value" id="hq-fc-rate" style="color:#c80a1e;">87.2<span class="kpi-unit">%</span></div></div>
+        </div>
+        <div class="hq-card"><div class="card-title">당월 수주 추이 & 예측</div><div class="card-sub">실적(실선) + 예측(점선)</div><div style="height:280px;"><canvas id="chart-forecast"></canvas></div></div>
+      </div>
+      <!-- 시리즈 분석 -->
+      <div id="hq-section-series" class="hq-section">
+        <div class="hq-row r2">
+          <div class="hq-card"><div class="card-title">시리즈 TOP 10</div><div class="card-sub">YTD 수주금액 기준</div><div id="hq-series-table"><div class="no-data">데이터 연동 후 표시됩니다.</div></div></div>
+          <div class="hq-card"><div class="card-title">주차별 시리즈 추이 (TOP 5)</div><div class="card-sub">주간 수주 추이</div><div style="height:300px;"><canvas id="chart-series-trend"></canvas></div></div>
+        </div>
+      </div>
+      <!-- 월별 보고서 -->
+      <div id="hq-section-monthly" class="hq-section">
+        <div class="hq-card"><div class="card-title">월별 수주/매출 현황</div><div class="card-sub">사업소별 월별 집계</div><div style="height:280px;"><canvas id="chart-monthly-report"></canvas></div></div>
+      </div>
+      <!-- 일별 수주 -->
+      <div id="hq-section-daily" class="hq-section">
+        <div class="hq-card" style="margin-bottom:12px;"><div class="card-title">일별 수주 추이 (전국 합계)</div><div class="card-sub">단위: 백만원 · 회색=주말/공휴일</div><div style="height:240px;"><canvas id="chart-daily"></canvas></div></div>
+      </div>
+    </div><!-- /hq-content -->
+  </div><!-- /hq-main -->
+</div><!-- /hq-dashboard -->
 
 <script>
 // ============================================================
@@ -328,8 +648,6 @@ const RED = '#c80a1e';
 const COMP_COLORS = { '한샘':'#2563eb', '리바트':'#16a34a', '까사미아':'#d97706', '에몬스':'#7c3aed' };
 const OFFICE_ORDER = ['서울사업소','경기사업소','대전사업소','광주사업소','대구사업소','부산사업소'];
 
-// datalabels 전역 비활성화 - 경쟁사 도넛에서만 개별 활성화
-Chart.defaults.set('plugins.datalabels', { display: false });
 
 let allRows = [];
 let compData = {};
@@ -409,6 +727,9 @@ function parseERP(text) {
     date:    h.indexOf('확정납기'),
     office:  h.indexOf('실적사업소'),
     address: h.indexOf('납품처주소'),
+    orderNo: h.indexOf('수주번호'),
+    setCode: h.indexOf('세트코드'),
+    itemCode:h.indexOf('단품코드'),
   };
   const rows=[];
   for(let i=1;i<lines.length;i++){
@@ -416,7 +737,11 @@ function parseERP(text) {
     if(c.length<10) continue;
     const get=k=>(c[idx[k]]||'').replace(/"/g,'').trim();
     const amt=parseInt(get('amount').replace(/[,\s]/g,''))||0;
-    rows.push({ store:get('store'), amt, type:get('type'), date:get('date'), office:get('office'), address:get('address') });
+    rows.push({
+      store:get('store'), amt, type:get('type'), date:get('date'),
+      office:get('office'), address:get('address'),
+      orderNo:get('orderNo'), setCode:get('setCode'), itemCode:get('itemCode'),
+    });
   }
   return rows;
 }
@@ -446,6 +771,61 @@ function parseCompetitor(text) {
     result[iloom].push(entry);
   }
   return result;
+}
+
+// ===== CAPS LOCK 감지 =====
+function checkCapsLock(e) {
+  const hint = document.getElementById('login-hint');
+  if (!hint) return;
+  const caps = e.getModifierState && e.getModifierState('CapsLock');
+  if (caps) {
+    hint.textContent = '⚠️ Caps Lock이 켜져 있습니다.';
+    hint.className = 'login-hint warn';
+  } else {
+    hint.textContent = '';
+    hint.className = 'login-hint';
+  }
+}
+
+function showLoginFail(msg) {
+  document.getElementById('login-error').textContent = msg;
+  document.getElementById('login-tips').style.display = 'block';
+}
+
+// ===== HQ ACCOUNTS =====
+const HQ_ACCOUNTS = {
+  'iloom_hq': 'hq2024',  // 아이디: 비밀번호 형태로 추가 가능
+};
+const HQ_URL = 'hq-dashboard.html';
+
+// ===== LOGIN MODE =====
+function setLoginMode(mode) {
+  const isHq = mode === 'hq';
+  document.getElementById('login-form-dealer').style.display = isHq ? 'none' : '';
+  document.getElementById('login-form-hq').style.display   = isHq ? '' : 'none';
+  document.getElementById('login-error').textContent = '';
+
+  const tabDealer = document.getElementById('login-tab-dealer');
+  const tabHq     = document.getElementById('login-tab-hq');
+  tabDealer.style.borderBottomColor = isHq ? 'transparent' : '#c80a1e';
+  tabDealer.style.color = isHq ? '#999' : '#c80a1e';
+  tabHq.style.borderBottomColor = isHq ? '#c80a1e' : 'transparent';
+  tabHq.style.color = isHq ? '#c80a1e' : '#999';
+}
+
+function doHqLogin() {
+  const id  = document.getElementById('hq-id').value.trim();
+  const pw  = document.getElementById('hq-pw').value;
+  const err = document.getElementById('login-error');
+  if (!id || !pw) { err.textContent = '아이디와 비밀번호를 입력하세요.'; return; }
+  if (!HQ_ACCOUNTS[id] || HQ_ACCOUNTS[id] !== pw) {
+    showLoginFail('아이디 또는 비밀번호가 올바르지 않습니다.');
+    return;
+  }
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('hq-dashboard').classList.add('show');
+  document.getElementById('hq-h-period').textContent = '2026-01 ~ 2026-04';
+  hqRenderRanking();
 }
 
 // ===== LOGIN =====
@@ -485,6 +865,7 @@ function doLogin(){
 function doLogout(){
   currentStore=''; dongTree={}; currentDongSido=''; currentDongSigungu='';
   document.getElementById('dashboard').style.display='none';
+  document.getElementById('hq-dashboard').classList.remove('show');
   document.getElementById('login-screen').style.display='flex';
   document.getElementById('store-pw').value='';
   Object.keys(charts).forEach(id=>destroyChart(id));
@@ -498,7 +879,7 @@ function renderDashboard(){
   switchMainTab('sales');
 
   const sales=allRows.filter(r=>r.store===currentStore&&r.type!=='(판촉물택배)'&&r.amt>0);
-  const officeSales=allRows.filter(r=>r.office===office&&r.type!=='(판촉물택배)'&&r.amt>0&&r.store);
+  const officeSales=allRows.filter(r=>r.office===office&&r.type!=='(판촉물택배)'&&r.amt>0&&r.store&&!r.store.includes('서브'));
 
   const monthSet=new Set(allRows.map(r=>r.date.slice(0,7)).filter(m=>/^\d{4}-\d{2}$/.test(m)));
   const months=[...monthSet].sort();
@@ -552,15 +933,36 @@ function renderKPI(sales, officeSales, latest, prev, months, office){
 function renderTrend(sales, months){
   const data=months.map(m=>sales.filter(r=>r.date.startsWith(m)).reduce((s,r)=>s+r.amt,0));
   const labels=months.map(m=>+m.split('-')[1]+'월');
+
+  const barLabelPlugin = {
+    id: 'trendLabels',
+    afterDatasetsDraw(chart) {
+      const { ctx } = chart;
+      chart.getDatasetMeta(0).data.forEach((bar, i) => {
+        const val = data[i];
+        if (!val) return;
+        ctx.save();
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.font = "bold 12px 'Montserrat', sans-serif";
+        ctx.fillStyle = '#555';
+        ctx.fillText(fmt(val) + '원', bar.x, bar.y - 4);
+        ctx.restore();
+      });
+    }
+  };
+
   destroyChart('trend');
   charts['trend']=new Chart(document.getElementById('chart-trend'),{
     type:'bar',
     data:{ labels, datasets:[{ data, backgroundColor:months.map((_,i)=>i===months.length-1?RED:'#F0C0C5'), borderRadius:3 }] },
     options:{
       responsive:true, maintainAspectRatio:false,
+      layout:{ padding:{ top:24 } },
       plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>' '+fmt(ctx.raw)+'원'}} },
       scales:{ x:{grid:{display:false},ticks:{font:{family:'Noto Sans KR',size:12}}}, y:{grid:{color:'#F0F0F0'},ticks:{callback:v=>fmt(v),font:{size:11}}} }
-    }
+    },
+    plugins:[barLabelPlugin]
   });
 }
 
@@ -596,6 +998,29 @@ function makeDonut(canvasId, entries, topN) {
   const total  = data.reduce((s,v)=>s+v, 0);
   const PALETTE = [RED,'#e8526a','#f09aa8','#f5c0c8','#f8d8dc','#E0E0E0','#ccc','#bbb'];
   const bg = data.map((_,i)=> i===labels.length-1&&etcAmt>0 ? '#E0E0E0' : PALETTE[i]||'#ccc');
+
+  const pctLabelPlugin = {
+    id: 'pctLabel_' + canvasId,
+    afterDraw(chart) {
+      const { ctx } = chart;
+      const meta = chart.getDatasetMeta(0);
+      meta.data.forEach((arc, i) => {
+        const pct = (data[i] / total * 100).toFixed(1);
+        if (parseFloat(pct) < 5) return;
+        const pos = arc.tooltipPosition();
+        ctx.save();
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = "bold 12px 'Montserrat', sans-serif";
+        ctx.shadowColor = 'rgba(0,0,0,0.4)';
+        ctx.shadowBlur = 4;
+        ctx.fillStyle = '#fff';
+        ctx.fillText(pct + '%', pos.x, pos.y);
+        ctx.restore();
+      });
+    }
+  };
+
   return new Chart(document.getElementById(canvasId), {
     type:'doughnut',
     data:{ labels, datasets:[{ data, backgroundColor:bg, borderWidth:0 }] },
@@ -605,7 +1030,8 @@ function makeDonut(canvasId, entries, topN) {
         legend:{ position:'bottom', labels:{font:{family:'Noto Sans KR',size:11}, padding:10} },
         tooltip:{ callbacks:{ label:ctx=>' '+ctx.label+': '+fmt(ctx.raw)+'원 ('+Math.round(ctx.raw/total*100)+'%)' } }
       }
-    }
+    },
+    plugins: [pctLabelPlugin]
   });
 }
 
@@ -802,7 +1228,9 @@ function switchMainTab(tab) {
     const months=[...new Set(allRows.map(r=>r.date.slice(0,7)).filter(m=>/^\d{4}-\d{2}$/.test(m)))].sort();
     renderMarketShare();
     renderComp(currentStore, months);
+    renderBrandTrend(currentStore, months);
   }
+  if(tab==='item') renderItems();
 }
 
 function renderMarketShare() {
@@ -861,11 +1289,35 @@ function renderMarketShare() {
   // 바깥(전국) 링은 같은 색 계열에서 약간 밝게
   const outerBg = shareBg.map(c => c + 'AA');
 
-  // 중앙 텍스트 플러그인
+  // 중앙 텍스트 + 세그먼트 퍼센트 레이블 플러그인
   const centerTextPlugin = {
-    id: 'mshareCenter',
+    id: 'mshareLabels',
     afterDraw(chart) {
       const { ctx, chartArea } = chart;
+
+      // 세그먼트 위 퍼센트 숫자
+      chart.data.datasets.forEach((dataset, dsIdx) => {
+        const meta = chart.getDatasetMeta(dsIdx);
+        const total = dataset.data.reduce((a,b)=>a+b, 0);
+        if (!total) return;
+        meta.data.forEach((arc, i) => {
+          const pct = (dataset.data[i] / total * 100).toFixed(1);
+          if (parseFloat(pct) < 5) return;
+          const pos = arc.tooltipPosition();
+          ctx.save();
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.font = "bold 12px 'Montserrat', sans-serif";
+          ctx.shadowColor = 'rgba(0,0,0,0.5)';
+          ctx.shadowBlur = 4;
+          ctx.fillStyle = '#fff';
+          ctx.fillText(pct + '%', pos.x, pos.y);
+
+          ctx.restore();
+        });
+      });
+
+      // 도넛 중앙 텍스트
       const cx = chartArea.left + chartArea.width / 2;
       const cy = chartArea.top  + chartArea.height / 2;
       ctx.save();
@@ -892,20 +1344,6 @@ function renderMarketShare() {
       responsive: true, maintainAspectRatio: false, cutout: '40%',
       plugins: {
         legend: { display: false },
-        datalabels: {
-          display: ctx => {
-            const total = ctx.dataset.data.reduce((a,b)=>a+b, 0);
-            return total > 0 && (ctx.dataset.data[ctx.dataIndex] / total) >= 0.05;
-          },
-          formatter: (value, ctx) => {
-            const total = ctx.dataset.data.reduce((a,b)=>a+b, 0);
-            return Math.round(value / total * 100) + '%';
-          },
-          color: '#fff',
-          font: { weight: 'bold', size: 11, family: 'Montserrat' },
-          textShadowColor: 'rgba(0,0,0,0.25)',
-          textShadowBlur: 3,
-        },
         tooltip: {
           callbacks: {
             title: ctx => `${ctx[0].dataset.label} — ${ctx[0].label}`,
@@ -953,6 +1391,341 @@ function renderMarketShare() {
   }).join('');
 
   statsEl.innerHTML = `<table style="width:100%;border-collapse:collapse;">${header}${dataRows}</table>`;
+}
+
+function renderItems() {
+  const sales = allRows.filter(r =>
+    r.store === currentStore && r.type !== '(판촉물택배)' && r.amt > 0 && r.setCode
+  );
+
+  // 세트코드별 집계 (단품 합산, 수주건 중복제거)
+  const searchVal = (document.getElementById('item-search')?.value || '').toUpperCase().trim();
+  const setMap = {};
+  sales.forEach(r => {
+    const code = r.setCode;
+    if (searchVal && !code.toUpperCase().includes(searchVal)) return;
+    if (!setMap[code]) setMap[code] = { amt: 0, orders: new Set() };
+    setMap[code].amt += r.amt;
+    if (r.orderNo) setMap[code].orders.add(r.orderNo);
+  });
+
+  const sorted = Object.entries(setMap)
+    .map(([code, d]) => ({ code, amt: d.amt, orderCount: d.orders.size }))
+    .sort((a, b) => b.amt - a.amt);
+
+  // KPI
+  const totalAmt = sorted.reduce((s, r) => s + r.amt, 0);
+  const totalOrders = new Set(sales.filter(r => !searchVal || r.setCode.toUpperCase().includes(searchVal)).map(r => r.orderNo)).size;
+  document.getElementById('item-kpi-sets').innerHTML = sorted.length + '<span class="kpi-unit">종</span>';
+  document.getElementById('item-kpi-orders').innerHTML = totalOrders + '<span class="kpi-unit">건</span>';
+  document.getElementById('item-kpi-amt').innerHTML = fmt(totalAmt) + '<span class="kpi-unit">원</span>';
+  document.getElementById('item-count-label').textContent = `전체 ${sorted.length}종 세트코드`;
+
+  // 세트코드 prefix 필터 버튼 (상위 prefix 추출)
+  const prefixMap = {};
+  sorted.forEach(r => {
+    const p = r.code.slice(0, 3);
+    prefixMap[p] = (prefixMap[p] || 0) + r.amt;
+  });
+  const topPrefixes = Object.entries(prefixMap).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([p])=>p);
+  const pfEl = document.getElementById('item-prefix-filter');
+  if (pfEl && pfEl.dataset.built !== '1') {
+    pfEl.innerHTML = topPrefixes.map(p =>
+      `<button onclick="document.getElementById('item-search').value='${p}';renderItems();"
+        style="padding:4px 10px;font-size:11px;font-weight:700;border:1px solid #E0E0E0;background:#fff;color:#666;cursor:pointer;font-family:'Noto Sans KR',sans-serif;border-radius:2px;">${p}</button>`
+    ).join('') +
+    `<button onclick="document.getElementById('item-search').value='';renderItems();"
+      style="padding:4px 10px;font-size:11px;font-weight:700;border:1px solid #E0E0E0;background:#fff;color:#999;cursor:pointer;font-family:'Noto Sans KR',sans-serif;border-radius:2px;">전체</button>`;
+    pfEl.dataset.built = '1';
+  }
+
+  // 차트 (TOP 20)
+  const top20 = sorted.slice(0, 20);
+  const h = Math.max(300, top20.length * 22);
+  document.getElementById('item-chart-wrap').style.height = h + 'px';
+  if (!document.getElementById('chart-items')) {
+    document.getElementById('item-chart-wrap').innerHTML = '<canvas id="chart-items"></canvas>';
+  }
+  destroyChart('items');
+  charts['items'] = new Chart(document.getElementById('chart-items'), {
+    type: 'bar',
+    data: {
+      labels: top20.map(r => r.code),
+      datasets: [{ data: top20.map(r => r.amt), backgroundColor: RED, borderRadius: 2 }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => `  ${fmt(ctx.raw)}원 (${top20[ctx.dataIndex].orderCount}건)` } }
+      },
+      scales: {
+        x: { grid: { color: '#F0F0F0' }, ticks: { callback: v => fmt(v) } },
+        y: { grid: { display: false }, ticks: { font: { family: 'Noto Sans KR', size: 11 } } }
+      }
+    }
+  });
+
+  // 테이블
+  const tableRows = sorted.map((r, i) => `
+    <tr style="border-bottom:1px solid #F4F4F4;">
+      <td style="padding:7px 10px;font-size:12px;color:#999;">${i + 1}</td>
+      <td style="padding:7px 10px;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:600;">${r.code}</td>
+      <td style="padding:7px 10px;font-size:12px;text-align:right;color:#555;">${r.orderCount}건</td>
+      <td style="padding:7px 10px;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;text-align:right;color:${RED};">${fmt(r.amt)}원</td>
+      <td style="padding:7px 10px;font-size:12px;text-align:right;color:#999;">${totalAmt > 0 ? (r.amt/totalAmt*100).toFixed(1) : 0}%</td>
+    </tr>`).join('');
+
+  document.getElementById('item-table-wrap').innerHTML = `
+    <table style="width:100%;border-collapse:collapse;">
+      <thead><tr style="border-bottom:2px solid #E8E8E8;">
+        <th style="padding:7px 10px;font-size:11px;color:#999;font-weight:600;text-align:left;">순위</th>
+        <th style="padding:7px 10px;font-size:11px;color:#999;font-weight:600;text-align:left;">세트코드</th>
+        <th style="padding:7px 10px;font-size:11px;color:#999;font-weight:600;text-align:right;">수주건수</th>
+        <th style="padding:7px 10px;font-size:11px;color:#999;font-weight:600;text-align:right;">매출금액</th>
+        <th style="padding:7px 10px;font-size:11px;color:#999;font-weight:600;text-align:right;">비중</th>
+      </tr></thead>
+      <tbody>${tableRows || '<tr><td colspan="5" class="no-data">데이터가 없습니다.</td></tr>'}</tbody>
+    </table>`;
+}
+
+function renderBrandTrend(storeName, months) {
+  const entries = compData[storeName];
+  const subEl = document.getElementById('brand-trend-sub');
+  if (!entries || !entries.length) {
+    document.getElementById('chart-brand-trend').parentElement.innerHTML = '<div class="no-data">경쟁사 데이터가 없습니다.</div>';
+    return;
+  }
+  const entry = entries[0];
+  if(subEl) subEl.textContent = `${entry.행정구역} (${entry.상권}) 기준`;
+
+  const labels = months.map(m => +m.split('-')[1] + '월');
+  const mIdx   = months.map(m => +m.split('-')[1] - 1);
+
+  // 일룸: ERP 실적
+  const iloomData = months.map(m =>
+    allRows.filter(r => r.store===storeName && r.type!=='(판촉물택배)' && r.amt>0 && r.date.startsWith(m))
+           .reduce((s,r) => s+r.amt, 0)
+  );
+
+  const datasets = [{
+    label: '일룸',
+    data: iloomData,
+    borderColor: RED,
+    backgroundColor: RED + '22',
+    borderWidth: 2.5,
+    pointRadius: 4,
+    pointBackgroundColor: RED,
+    tension: 0.35,
+    fill: false,
+  }];
+
+  for (const [brand, color] of Object.entries(COMP_COLORS)) {
+    if (!entry.brands[brand]) continue;
+    const data = mIdx.map(i => entry.brands[brand].months[i] || 0);
+    if (!data.some(v => v > 0)) continue;
+    const label = entry.brands[brand].name ? `${brand} (${entry.brands[brand].name})` : brand;
+    datasets.push({
+      label,
+      data,
+      borderColor: color,
+      backgroundColor: color + '22',
+      borderWidth: 2,
+      pointRadius: 3,
+      pointBackgroundColor: color,
+      tension: 0.35,
+      fill: false,
+    });
+  }
+
+  destroyChart('brandTrend');
+  charts['brandTrend'] = new Chart(document.getElementById('chart-brand-trend'), {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { family: 'Noto Sans KR', size: 11 }, padding: 14, usePointStyle: true } },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${fmt(ctx.raw)}원` } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { family: 'Noto Sans KR', size: 12 } } },
+        y: { grid: { color: '#F0F0F0' }, ticks: { callback: v => fmt(v), font: { size: 11 } } }
+      }
+    }
+  });
+}
+
+// ===== HQ DASHBOARD JS =====
+const OFFICE_COLORS = {
+  '서울사업소':'#c80a1e','경기사업소':'#2563eb','대전사업소':'#d97706',
+  '광주사업소':'#16a34a','대구사업소':'#7c3aed','부산사업소':'#0891b2'
+};
+const HQ_OFFICES = ['서울사업소','경기사업소','대전사업소','광주사업소','대구사업소','부산사업소'];
+const HQ_WEEKS = ['W01','W02','W03','W04','W05','W06','W07','W08','W09','W10','W11','W12','W13','W14','W15','W16'];
+function rand(min,max){ return Math.round(Math.random()*(max-min)+min); }
+const HQ_SAMPLE = {
+  officeYTD: {'서울사업소':142,'경기사업소':198,'대전사업소':87,'광주사업소':73,'대구사업소':95,'부산사업소':110},
+  channelMix: {'리테일':62,'직영':38},
+  weeklyChannel: {'리테일':HQ_WEEKS.map(()=>rand(800,1400)),'직영':HQ_WEEKS.map(()=>rand(400,800))},
+  weeklyOffice: Object.fromEntries(HQ_OFFICES.map(o=>[o,HQ_WEEKS.map(()=>rand(200,600))])),
+  dailyTotal: Array.from({length:30},()=>rand(50,350)),
+  storeRank: [
+    {name:'스타필드고양',office:'경기사업소',ytd:198},{name:'부산센텀4',office:'부산사업소',ytd:187},
+    {name:'대구3',office:'대구사업소',ytd:165},{name:'논현4',office:'서울사업소',ytd:154},
+    {name:'분당서현',office:'경기사업소',ytd:142},{name:'봉선5',office:'광주사업소',ytd:138},
+    {name:'대전둔산5',office:'대전사업소',ytd:131},{name:'창원3',office:'부산사업소',ytd:128},
+    {name:'인천중앙2',office:'경기사업소',ytd:119},{name:'수원광교3',office:'경기사업소',ytd:115},
+  ],
+};
+let hqWeeklyView = 'index';
+let hqMemos = [];
+
+function hqShowSection(name, el) {
+  document.querySelectorAll('.hq-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('#sidebar .nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('hq-section-'+name).classList.add('active');
+  if(el) el.classList.add('active');
+  hqRenderSection(name);
+}
+function hqSetFilter(type,val,btn){
+  btn.closest('.filter-tabs').querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function hqApplyFilters(){}
+function hqAnomalyFilter(type,val,btn){
+  btn.closest('.filter-tabs').querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function hqSetWeeklyView(view,btn){
+  hqWeeklyView=view;
+  btn.closest('.view-tabs').querySelectorAll('.vtab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  hqRenderWeeklyOffice();
+}
+function hqRenderSection(name){
+  const fns={ranking:hqRenderRanking,channel:hqRenderChannel,weekly:hqRenderWeekly,
+             anomaly:hqRenderAnomaly,forecast:hqRenderForecast,series:hqRenderSeries,
+             monthly:hqRenderMonthly,daily:hqRenderDaily};
+  if(fns[name]) fns[name]();
+}
+
+function hqRenderRanking(){
+  document.getElementById('hq-kpi-total').innerHTML='705<span class="kpi-unit">억</span>';
+  document.getElementById('hq-kpi-total-sub').textContent='1월~4월 누계';
+  document.getElementById('hq-kpi-monthly').innerHTML='182<span class="kpi-unit">억</span>';
+  document.getElementById('hq-kpi-monthly-sub')&&(document.getElementById('hq-kpi-monthly-sub').textContent='4월 누계');
+  document.getElementById('hq-kpi-yoy').innerHTML='+5.3<span class="kpi-unit">%</span>';
+  document.getElementById('hq-kpi-yoy').style.color='#16a34a';
+
+  destroyChart('officeRank');
+  charts['officeRank']=new Chart(document.getElementById('chart-office-rank'),{
+    type:'bar',data:{labels:HQ_OFFICES,datasets:[{data:HQ_OFFICES.map(o=>HQ_SAMPLE.officeYTD[o]),backgroundColor:HQ_OFFICES.map(o=>OFFICE_COLORS[o]),borderRadius:3}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.raw}억원`}}},scales:{x:{grid:{color:'#F0F0F0'},ticks:{callback:v=>v+'억'}},y:{grid:{display:false}}}}
+  });
+  destroyChart('channelMix');
+  charts['channelMix']=new Chart(document.getElementById('chart-channel-mix'),{
+    type:'doughnut',data:{labels:Object.keys(HQ_SAMPLE.channelMix),datasets:[{data:Object.values(HQ_SAMPLE.channelMix),backgroundColor:[RED,'#2563eb'],borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{family:'Noto Sans KR',size:11},padding:10}},tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${ctx.raw}%`}}}}
+  });
+  const sorted=[...HQ_SAMPLE.storeRank].sort((a,b)=>b.ytd-a.ytd);
+  document.getElementById('rank-table-wrap').style.height=Math.max(280,sorted.length*28)+'px';
+  destroyChart('storeRank');
+  charts['storeRank']=new Chart(document.getElementById('chart-store-rank'),{
+    type:'bar',data:{labels:sorted.map(s=>s.name),datasets:[{data:sorted.map(s=>s.ytd),backgroundColor:sorted.map(s=>OFFICE_COLORS[s.office]||'#ccc'),borderRadius:2}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.raw}백만원`}}},scales:{x:{grid:{color:'#F0F0F0'},ticks:{callback:v=>v+'백만'}},y:{grid:{display:false},ticks:{font:{family:'Noto Sans KR',size:11}}}}}
+  });
+}
+
+function hqRenderChannel(){
+  const months=['1월','2월','3월','4월'];
+  destroyChart('channelCompare');
+  charts['channelCompare']=new Chart(document.getElementById('chart-channel-compare'),{
+    type:'bar',data:{labels:months,datasets:[{label:'리테일',data:[420,445,398,432],backgroundColor:RED,borderRadius:3},{label:'직영',data:[280,265,301,288],backgroundColor:'#2563eb',borderRadius:3}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{family:'Noto Sans KR',size:11},padding:10}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#F0F0F0'},ticks:{callback:v=>v+'백만'}}}}
+  });
+  destroyChart('yoy');
+  const yoyData=[5.2,3.8,-1.2,7.4];
+  charts['yoy']=new Chart(document.getElementById('chart-yoy'),{
+    type:'bar',data:{labels:months,datasets:[{label:'리테일 YoY',data:yoyData,backgroundColor:yoyData.map(v=>v>=0?'#dcfce7':'#fee2e2'),borderRadius:3},{label:'직영 YoY',data:[2.1,4.5,6.3,1.8],backgroundColor:'#dbeafe',borderRadius:3}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{family:'Noto Sans KR',size:11},padding:10}},tooltip:{callbacks:{label:ctx=>` ${ctx.raw>0?'+':''}${ctx.raw}%`}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#F0F0F0'},ticks:{callback:v=>v+'%'}}}}
+  });
+}
+
+function hqRenderWeekly(){
+  destroyChart('weeklyChannel');
+  charts['weeklyChannel']=new Chart(document.getElementById('chart-weekly-channel'),{
+    type:'line',data:{labels:HQ_WEEKS,datasets:[{label:'리테일',data:HQ_SAMPLE.weeklyChannel['리테일'],borderColor:RED,backgroundColor:RED+'22',borderWidth:2,pointRadius:3,tension:0.3,fill:false},{label:'직영',data:HQ_SAMPLE.weeklyChannel['직영'],borderColor:'#2563eb',backgroundColor:'#2563eb22',borderWidth:2,pointRadius:3,tension:0.3,fill:false}]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'bottom',labels:{font:{family:'Noto Sans KR',size:11},padding:12,usePointStyle:true}},tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label}: ${ctx.raw}백만원`}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#F0F0F0'},ticks:{callback:v=>v+'백만'}}}}
+  });
+  hqRenderWeeklyOffice();
+}
+
+function hqRenderWeeklyOffice(){
+  let data={};
+  if(hqWeeklyView==='index') HQ_OFFICES.forEach(o=>{const b=HQ_SAMPLE.weeklyOffice[o][0]||1;data[o]=HQ_SAMPLE.weeklyOffice[o].map(v=>Math.round(v/b*100));});
+  else if(hqWeeklyView==='wow') HQ_OFFICES.forEach(o=>{data[o]=HQ_SAMPLE.weeklyOffice[o].map((v,i)=>i===0?0:Math.round((v-HQ_SAMPLE.weeklyOffice[o][i-1])/HQ_SAMPLE.weeklyOffice[o][i-1]*100));});
+  else data=HQ_SAMPLE.weeklyOffice;
+  destroyChart('weeklyOffice');
+  charts['weeklyOffice']=new Chart(document.getElementById('chart-weekly-office'),{
+    type:'line',data:{labels:HQ_WEEKS,datasets:HQ_OFFICES.map(o=>({label:o,data:data[o],borderColor:OFFICE_COLORS[o],backgroundColor:OFFICE_COLORS[o]+'22',borderWidth:2,pointRadius:2,tension:0.3,fill:false}))},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'bottom',labels:{font:{family:'Noto Sans KR',size:11},padding:10,usePointStyle:true,boxWidth:10}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#F0F0F0'},ticks:{callback:v=>hqWeeklyView==='index'?v:hqWeeklyView==='wow'?v+'%':v+'백만'}}}}
+  });
+}
+
+function hqRenderAnomaly(){
+  document.getElementById('hq-anomaly-table').innerHTML=`<table class="data-table"><thead><tr><th>매장</th><th>사업소</th><th>유형</th><th style="text-align:right">전주</th><th style="text-align:right">금주</th><th style="text-align:right">변화율</th></tr></thead><tbody><tr><td>스타필드수원</td><td>경기사업소</td><td><span class="anomaly-badge anomaly-up">급등</span></td><td style="text-align:right">82백만</td><td style="text-align:right">134백만</td><td style="text-align:right;color:#16a34a;font-weight:700">+63.4%</td></tr><tr><td>마산6</td><td>부산사업소</td><td><span class="anomaly-badge anomaly-down">급락</span></td><td style="text-align:right">95백만</td><td style="text-align:right">41백만</td><td style="text-align:right;color:#c80a1e;font-weight:700">-56.8%</td></tr><tr><td>서산4</td><td>대전사업소</td><td><span class="anomaly-badge anomaly-zero">0원 전환</span></td><td style="text-align:right">67백만</td><td style="text-align:right">0</td><td style="text-align:right;color:#555">-100%</td></tr></tbody></table>`;
+}
+
+function hqRenderForecast(){
+  const days=Array.from({length:30},(_,i)=>`${i+1}일`);
+  const actual=Array.from({length:19},()=>rand(30,120));
+  destroyChart('forecast');
+  charts['forecast']=new Chart(document.getElementById('chart-forecast'),{
+    type:'line',data:{labels:days,datasets:[{label:'실적',data:[...actual,...Array(11).fill(null)],borderColor:RED,borderWidth:2,pointRadius:2,tension:0.3,fill:false},{label:'예측',data:[...Array(18).fill(null),actual[18],...Array.from({length:11},()=>rand(30,100))],borderColor:'#888',borderWidth:2,borderDash:[5,4],pointRadius:2,tension:0.3,fill:false}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{family:'Noto Sans KR',size:11},padding:10,usePointStyle:true}},tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label}: ${ctx.raw}백만원`}}},scales:{x:{grid:{display:false},ticks:{maxTicksLimit:10}},y:{grid:{color:'#F0F0F0'},ticks:{callback:v=>v+'백만'}}}}
+  });
+}
+
+function hqRenderSeries(){
+  const series=['라디우스','엘리움','첼시','마레','에르디아','루시','센트','알바','클레','베르디'];
+  const vals=series.map(()=>rand(200,1200));
+  document.getElementById('hq-series-table').innerHTML=`<table class="data-table"><thead><tr><th>순위</th><th>시리즈</th><th style="text-align:right">YTD 수주</th></tr></thead><tbody>${series.map((s,i)=>`<tr><td><span class="rank-badge${i<3?' top':''}">${i+1}</span></td><td>${s}</td><td style="text-align:right;font-family:'Montserrat',sans-serif;font-weight:600;">${vals[i]}백만</td></tr>`).join('')}</tbody></table>`;
+  destroyChart('seriesTrend');
+  charts['seriesTrend']=new Chart(document.getElementById('chart-series-trend'),{
+    type:'line',data:{labels:HQ_WEEKS,datasets:series.slice(0,5).map((s,i)=>({label:s,data:HQ_WEEKS.map(()=>rand(30,200)),borderColor:[RED,'#2563eb','#16a34a','#d97706','#7c3aed'][i],borderWidth:2,pointRadius:2,tension:0.3,fill:false}))},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'bottom',labels:{font:{family:'Noto Sans KR',size:11},padding:10,usePointStyle:true,boxWidth:10}},tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label}: ${ctx.raw}백만원`}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#F0F0F0'},ticks:{callback:v=>v+'백만'}}}}
+  });
+}
+
+function hqRenderMonthly(){
+  const months=['1월','2월','3월','4월'];
+  destroyChart('monthlyReport');
+  charts['monthlyReport']=new Chart(document.getElementById('chart-monthly-report'),{
+    type:'bar',data:{labels:months,datasets:HQ_OFFICES.map(o=>({label:o,data:months.map(()=>rand(100,400)),backgroundColor:OFFICE_COLORS[o],borderRadius:2}))},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{family:'Noto Sans KR',size:11},padding:10,boxWidth:10}}},scales:{x:{grid:{display:false},stacked:true},y:{grid:{color:'#F0F0F0'},ticks:{callback:v=>v+'백만'},stacked:true}}}
+  });
+}
+
+function hqRenderDaily(){
+  const days=Array.from({length:30},(_,i)=>`${i+1}`);
+  const isWE=[false,false,true,true,false,false,false,true,true,false,false,false,true,true,false,false,false,false,false,true,true,false,false,false,false,false,true,true,false,false];
+  const data=HQ_SAMPLE.dailyTotal;
+  destroyChart('daily');
+  charts['daily']=new Chart(document.getElementById('chart-daily'),{
+    type:'bar',data:{labels:days,datasets:[{data,backgroundColor:data.map((_,i)=>isWE[i]?'#E0E0E0':RED),borderRadius:2}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.raw}백만원`}}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:'#F0F0F0'},ticks:{callback:v=>v+'백만'}}}}
+  });
+}
+
+function hqAddMemo(){
+  const text=document.getElementById('hq-memo-text').value.trim();
+  if(!text) return;
+  hqMemos.push({text,time:new Date().toLocaleString('ko-KR')});
+  const el=document.getElementById('hq-memo-list');
+  el.innerHTML=hqMemos.map((m,i)=>`<div style="padding:8px 12px;background:#FAFAFA;border-left:3px solid ${RED};margin-bottom:6px;display:flex;justify-content:space-between;"><div><span style="font-size:11px;color:#999;">${m.time}</span><div style="font-size:13px;margin-top:4px;">${m.text}</div></div><button onclick="hqMemos.splice(${i},1);document.getElementById('hq-memo-list').innerHTML=''" style="background:none;border:none;color:#bbb;cursor:pointer;">×</button></div>`).join('');
+  document.getElementById('hq-memo-text').value='';
 }
 
 // ===== LOAD =====
